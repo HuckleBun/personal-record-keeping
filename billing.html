@@ -20,6 +20,31 @@
         <a href="#" id="logoutBtn" class="nav-link">LOGOUT</a>
       </div>
     </nav>
-    <!-- ... rest of the body content ... -->
+    <main>
+      <div id="notes-page" class="page active">
+        <h1>Billing Time Tracker</h1>
+        <form id="noteForm">
+          <input type="text" id="title" placeholder="Title" required />
+          <textarea
+            id="description"
+            placeholder="Description"
+            required
+          ></textarea>
+          <input
+            type="number"
+            id="hours"
+            placeholder="Hours"
+            step="0.25"
+            min="0"
+            required
+          />
+          <button type="submit">Save Note</button>
+        </form>
+        <div id="noteList">
+          <h2>Saved Notes</h2>
+        </div>
+      </div>
+    </main>
+    <script src="script.js"></script>
   </body>
 </html>
