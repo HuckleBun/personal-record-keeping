@@ -1,7 +1,10 @@
 let notes = JSON.parse(localStorage.getItem('notes')) || [];
 let tableData = JSON.parse(localStorage.getItem('tableData')) || [];
 
+let currentUser = null;
+
 document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
     // Determine which page we're on and run the appropriate initialization
     const currentPage = document.querySelector('.page.active');
     if (currentPage) {
@@ -13,6 +16,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+function checkAuth() {
+    currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+        window.location.href = 'login.html';
+    } else {
+        loadUserData();
+    }
+}
+
+function loadUserData() {
+    notes = JSON.parse(localStorage.getItem(`notes_${currentUser.email}`)) || [];
+    tableData = JSON.parse(localStorage.getItem(`tableData_${currentUser.email}`)) || [];
+}
 
 function initNotesPage() {
     renderNotes();
@@ -27,6 +44,13 @@ function initNotesPage() {
         document.getElementById('title').value = '';
         document.getElementById('description').value = '';
         document.getElementById('hours').value = '';
+    });
+
+    // Add this block to handle logout on the billing page
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
     });
 }
 
@@ -71,6 +95,12 @@ function initDataTablePage() {
             dataModal.style.display = 'none';
         }
     });
+
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
+    });
 }
 
 function addNote(note) {
@@ -91,7 +121,7 @@ function deleteNote(id) {
 }
 
 function saveNotes() {
-    localStorage.setItem('notes', JSON.stringify(notes));
+    localStorage.setItem(`notes_${currentUser.email}`, JSON.stringify(notes));
 }
 
 function renderNotes() {
@@ -124,7 +154,7 @@ function addTableData(data) {
 }
 
 function saveTableData() {
-    localStorage.setItem('tableData', JSON.stringify(tableData));
+    localStorage.setItem(`tableData_${currentUser.email}`, JSON.stringify(tableData));
 }
 
 function renderTable(filter = '') {
