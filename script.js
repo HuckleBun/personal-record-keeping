@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function checkAuth() {
     currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     } else {
         loadUserData();
     }
@@ -50,7 +50,7 @@ function initNotesPage() {
     document.getElementById('logoutBtn').addEventListener('click', function(e) {
         e.preventDefault();
         localStorage.removeItem('currentUser');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     });
 }
 
@@ -99,7 +99,7 @@ function initDataTablePage() {
     document.getElementById('logoutBtn').addEventListener('click', function(e) {
         e.preventDefault();
         localStorage.removeItem('currentUser');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     });
 }
 

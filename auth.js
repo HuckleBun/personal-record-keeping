@@ -19,7 +19,7 @@ function handleLogin(e) {
     
     if (users[email] && users[email].password === password) {
         localStorage.setItem('currentUser', JSON.stringify({ email }));
-        window.location.href = 'index.html';
+        window.location.href = 'billing.html';
     } else {
         alert('Invalid email or password');
     }
@@ -38,7 +38,7 @@ function handleSignup(e) {
         users[email] = { password };
         localStorage.setItem('users', JSON.stringify(users));
         localStorage.setItem('currentUser', JSON.stringify({ email }));
-        window.location.href = 'index.html';
+        window.location.href = 'billing.html';
     }
 }
 
