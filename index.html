@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Billing Time Tracker</title>
+    <title>Login - Billing Time Tracker</title>
     <link rel="stylesheet" href="./styles.css" />
     <link
       rel="stylesheet"
@@ -11,40 +11,29 @@
     />
   </head>
   <body>
-    <nav class="navbar">
-      <ul>
-        <li><a href="index.html" class="nav-link active">BILLING</a></li>
-        <li><a href="data-table.html" class="nav-link">CASE INFO</a></li>
-      </ul>
-      <div class="navbar-bottom">
-        <a href="#" id="logoutBtn" class="nav-link">LOGOUT</a>
-      </div>
-    </nav>
-    <main>
-      <div id="notes-page" class="page active">
-        <h1>Billing Time Tracker</h1>
-        <form id="noteForm">
-          <input type="text" id="title" placeholder="Title" required />
-          <textarea
-            id="description"
-            placeholder="Description"
-            required
-          ></textarea>
-          <input
-            type="number"
-            id="hours"
-            placeholder="Hours"
-            step="0.25"
-            min="0"
-            required
-          />
-          <button type="submit">Save Note</button>
-        </form>
-        <div id="noteList">
-          <h2>Saved Notes</h2>
-        </div>
-      </div>
-    </main>
-    <script src="script.js"></script>
+    <div class="login-container">
+      <h1>Login</h1>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+      <p>Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
+    </div>
+    <div class="signup-container" style="display: none">
+      <h1>Sign Up</h1>
+      <form id="signupForm">
+        <input type="email" id="signupEmail" placeholder="Email" required />
+        <input
+          type="password"
+          id="signupPassword"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+    </div>
+    <script src="auth.js"></script>
   </body>
 </html>
