@@ -2,9 +2,10 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
     background-color: #f0f2f5;
     color: #333;
+    display: flex;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .navbar {
@@ -13,6 +14,13 @@ body {
     height: 100vh;
     padding-top: 20px;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
 }
 
 .navbar ul {
@@ -44,8 +52,11 @@ body {
 main {
     flex-grow: 1;
     padding: 30px;
-    max-width: 800px;
-    margin: 0 0 0 30px; /* Add left margin to main content */
+    margin-left: 200px; /* Match the width of the navbar */
+    width: calc(100% - 200px); /* Take up the remaining width */
+    overflow-y: auto;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
 h1, h2 {
@@ -59,20 +70,20 @@ h1, h2 {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-bottom: 30px;
-    max-width: 600px; /* Limit the maximum width of the form */
-    margin-left: 0; /* Change this from auto to 0 */
+    max-width: 800px; /* Increased from 600px */
+    margin-left: 0;
     margin-right: auto;
 }
 
 #noteForm input,
 #noteForm textarea {
-    width: calc(100% - 40px); /* Subtract 40px to account for padding */
+    width: calc(100% - 40px);
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
-    display: block; /* Ensure each input is on a new line */
+    display: block;
     margin-left: auto;
     margin-right: auto;
 }
@@ -86,10 +97,10 @@ h1, h2 {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
-    display: block; /* Center the button */
+    display: block;
     margin-left: auto;
     margin-right: auto;
-    width: calc(100% - 40px); /* Match the width of inputs */
+    width: calc(100% - 40px);
 }
 
 #noteForm button:hover {
@@ -103,8 +114,8 @@ h1, h2 {
     padding: 20px;
     width: calc(50% - 10px);
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    position: relative; /* Add this to contain absolutely positioned children */
-    margin-bottom: 20px; /* Add some space between notes */
+    position: relative;
+    margin-bottom: 20px;
 }
 
 .note:hover {
@@ -124,11 +135,11 @@ h1, h2 {
     font-size: 14px;
     cursor: pointer;
     transition: opacity 0.3s, background-color 0.3s;
-    opacity: 0; /* Hide the button by default */
+    opacity: 0;
 }
 
 .note:hover .delete-btn {
-    opacity: 1; /* Show the button on hover */
+    opacity: 1;
 }
 
 .note .delete-btn:hover {
@@ -200,6 +211,8 @@ h1, h2 {
 .page {
     display: none;
     height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .page.active {
@@ -282,7 +295,7 @@ h1, h2 {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: left;
-    vertical-align: middle; /* Align content vertically */
+    vertical-align: middle;
 }
 
 #dataTable th {
@@ -333,49 +346,31 @@ h1, h2 {
     border-radius: 0;
     font-size: 16px;
     display: inline-block;
-    position: static; /* Ensure it's not positioned absolutely */
+    position: static;
 }
 
 #dataTable .delete-btn:hover {
     color: #c0392b;
 }
 
-/* Remove these conflicting styles */
-/*
-#dataTable .delete-btn {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    display: inline-block;
-}
-
-#dataTable .delete-btn:hover {
-    background-color: #c0392b;
-}
-*/
-
 /* Data Modal Styles */
 #dataModal .modal-content {
-    width: 450px; /* Increased from 400px to 450px */
-    padding: 20px; /* Added padding for better spacing */
+    width: 450px;
+    padding: 20px;
 }
 
 #dataForm input {
-    width: calc(100% - 20px); /* Subtracting 20px to account for padding */
+    width: calc(100% - 20px);
     padding: 10px;
-    margin-bottom: 15px; /* Increased from 10px to 15px for better spacing */
+    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
 }
 
 #dataForm button {
-    width: calc(100% - 20px); /* Matching the width of input fields */
-    padding: 12px 10px; /* Increased vertical padding */
+    width: calc(100% - 20px);
+    padding: 12px 10px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -397,7 +392,7 @@ h1, h2 {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    display: inline-block; /* Ensure the button is displayed */
+    display: inline-block;
 }
 
 #dataTable .delete-btn:hover {
@@ -438,7 +433,7 @@ h1, h2 {
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    width: calc(100% - 150px); /* Adjust based on the width of the Add Data button */
+    width: calc(100% - 150px);
 }
 
 .note-header {
@@ -460,4 +455,57 @@ h1, h2 {
     }
 }
 
-/* ... (keep remaining styles) ... */
+/* ... (rest of the styles) ... */
+
+.login-container, .signup-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.login-container h1, .signup-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-container form, .signup-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container input, .signup-container input {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-container button, .signup-container button {
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-container p, .signup-container p {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* ... (rest of the styles) ... */
+
+.navbar-bottom {
+    margin-top: auto;
+    padding-bottom: 20px;
+    margin-top: -20px; /* Add this line to move it higher */
+}
+
+.navbar-bottom .nav-link {
+    text-align: center;
+    padding: 15px 0;
+}
