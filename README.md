@@ -1,15 +1,15 @@
 # personal-record-keeping
 
-Password Generator
-# Purpose
-Takes in a specified length from the user, as well as certain criteria that the user wants to use, and generates a random password using what the user has allowed.
+## Purpose
+Your all-in-one work organizer.
 
-# Built With
-HTML
-CSS
-JS
-Website
-https://hucklebun.github.io/password-generator/
+## Built With
+* HTML
+* CSS
+* JS
 
-# Contribution
+## Website
+https://hucklebun.github.io/personal-record-keeping/
+
+## Contribution
 Made by Micah Duehring
