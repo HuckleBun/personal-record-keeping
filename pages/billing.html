@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Billing Time Tracker</title>
+    <title>Billing</title>
     <link rel="stylesheet" href="../public/css/styles.css" />
     <link
       rel="stylesheet"
@@ -16,11 +16,19 @@
         <li><a href="../index.html" class="nav-link">HOME</a></li>
         <li><a href="./billing.html" class="nav-link active">BILLING</a></li>
         <li><a href="./data-table.html" class="nav-link">CASE INFO</a></li>
+        <li>
+          <a href="./email_templates.html" class="nav-link">EMAIL TEMPLATES</a>
+        </li>
+        <li>
+          <a href="./password-generator.html" class="nav-link"
+            >PASSWORD GENERATOR</a
+          >
+        </li>
       </ul>
     </nav>
     <main>
       <div id="notes-page" class="page active">
-        <h1>Billing Time Tracker</h1>
+        <h1>Billing</h1>
         <form id="noteForm">
           <input type="text" id="title" placeholder="Case" required />
           <select id="activity" name="activity" required>
@@ -35,10 +43,10 @@
             min="0"
             required
           />
-          <button type="submit">Save Note</button>
+          <button type="submit">Save Billing</button>
         </form>
         <div id="noteList">
-          <h2>Saved Notes</h2>
+          <h2>Saved Billings</h2>
         </div>
         <div class="file-controls file-controls-billing">
           <button id="exportBillingBtn" class="action-btn">
@@ -59,6 +67,6 @@
         </div>
       </div>
     </main>
-    <script src="../public/js/script.js"></script>
+    <script src="../public/js/billing.js"></script>
   </body>
 </html>

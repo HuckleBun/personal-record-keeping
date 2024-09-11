@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data Table - Billing Time Tracker</title>
+    <title>Case Information</title>
     <link rel="stylesheet" href="../public/css/styles.css" />
     <link
       rel="stylesheet"
@@ -18,13 +18,21 @@
         <li>
           <a href="./data-table.html" class="nav-link active">CASE INFO</a>
         </li>
+        <li>
+          <a href="./email_templates.html" class="nav-link">EMAIL TEMPLATES</a>
+        </li>
+        <li>
+          <a href="./password-generator.html" class="nav-link"
+            >PASSWORD GENERATOR</a
+          >
+        </li>
       </ul>
     </nav>
     <main>
       <div id="data-table-page" class="page active">
-        <h1>Data Table</h1>
+        <h1>Case Information</h1>
         <div class="table-controls">
-          <button id="addDataBtn">Add Data</button>
+          <button id="addDataBtn">Add Case</button>
           <input type="text" id="tableFilter" placeholder="Filter table..." />
         </div>
         <table id="dataTable">
@@ -93,6 +101,6 @@
         </form>
       </div>
     </div>
-    <script src="../public/js/script.js"></script>
+    <script src="../public/js/data-table.js"></script>
   </body>
 </html>
