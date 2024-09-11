@@ -1,9 +1,15 @@
 function exportData(data, filename) {
-  // Include activities with the notes data
-  const exportData = {
-    notes: data,
-    activities: JSON.parse(localStorage.getItem("activities")) || [],
-  };
+  let exportData;
+  if (filename.includes("billing")) {
+    // For billing data, keep the current structure
+    exportData = {
+      notes: data,
+      activities: JSON.parse(localStorage.getItem("activities")) || [],
+    };
+  } else {
+    // For case info data, export as is
+    exportData = data;
+  }
   console.log("Exporting data:", exportData);
   const blob = new Blob([JSON.stringify(exportData, null, 2)], {
     type: "application/json",
@@ -49,6 +55,10 @@ function loadData() {
 function saveData() {
   localStorage.setItem("notes", JSON.stringify(notes));
   localStorage.setItem("tableData", JSON.stringify(tableData));
+  console.log(
+    "Saved tableData:",
+    JSON.parse(localStorage.getItem("tableData"))
+  ); // Add this line for debugging
   updateFileControlsVisibility();
 }
 
@@ -202,6 +212,9 @@ function renderNotes() {
 }
 
 function renderTable(filter = "") {
+  console.log("renderTable called with filter:", filter);
+  console.log("Current tableData:", tableData);
+
   const tableBody = document.querySelector("#dataTable tbody");
   tableBody.innerHTML = "";
 
@@ -210,6 +223,8 @@ function renderTable(filter = "") {
       value.toString().toLowerCase().includes(filter.toLowerCase())
     )
   );
+
+  console.log("Filtered data to render:", filteredData);
 
   filteredData.forEach((item) => {
     const row = document.createElement("tr");
@@ -229,6 +244,8 @@ function renderTable(filter = "") {
     `;
     tableBody.appendChild(row);
   });
+
+  console.log("Table rows added:", filteredData.length);
 
   document.querySelectorAll("#dataTable .edit-btn").forEach((button) => {
     button.addEventListener("click", function () {
@@ -300,42 +317,38 @@ function setupExportImport() {
       if (file) {
         try {
           const importedData = await importData(file);
-          // Check if the imported data has the new structure
-          if (importedData.notes && importedData.activities) {
-            // Merge imported notes with existing notes
-            const mergedNotes = [...notes, ...importedData.notes];
-            // Remove duplicates based on id
-            notes = mergedNotes.filter(
-              (note, index, self) =>
-                index === self.findIndex((t) => t.id === note.id)
-            );
-
-            // Merge imported activities with existing activities
-            const existingActivities =
-              JSON.parse(localStorage.getItem("activities")) || [];
-            const mergedActivities = [
-              ...new Set([...existingActivities, ...importedData.activities]),
-            ];
-            localStorage.setItem(
-              "activities",
-              JSON.stringify(mergedActivities)
-            );
-
-            saveData();
-            renderNotes();
-            loadActivities(); // Reload the activities dropdown
-          } else {
-            // Handle old format (just an array of notes)
-            const mergedNotes = [...notes, ...importedData];
-            notes = mergedNotes.filter(
-              (note, index, self) =>
-                index === self.findIndex((t) => t.id === note.id)
-            );
-            saveData();
-            renderNotes();
+          if (!validateImportedData(importedData, "billing")) {
+            throw new Error("Invalid data format for billing import");
           }
+          // Merge imported notes with existing notes
+          const mergedNotes = [...notes, ...importedData.notes];
+          // Remove duplicates based on id
+          notes = mergedNotes.filter(
+            (note, index, self) =>
+              index === self.findIndex((t) => t.id === note.id)
+          );
+
+          // Merge imported activities with existing activities
+          const existingActivities =
+            JSON.parse(localStorage.getItem("activities")) || [];
+          const mergedActivities = [
+            ...new Set([...existingActivities, ...importedData.activities]),
+          ];
+          localStorage.setItem("activities", JSON.stringify(mergedActivities));
+
+          saveData();
+          renderNotes();
+          loadActivities(); // Reload the activities dropdown
+          showNotification("Billing data imported successfully");
         } catch (error) {
           console.error("Error importing billing data:", error);
+          showNotification(
+            "Error importing billing data: " + error.message,
+            true
+          );
+        } finally {
+          // Reset the file input
+          event.target.value = "";
         }
       }
     });
@@ -353,18 +366,42 @@ function setupExportImport() {
       const file = event.target.files[0];
       if (file) {
         try {
+          console.log("Starting import process");
           const importedData = await importData(file);
+          console.log("Imported data:", importedData);
+
+          if (!validateImportedData(importedData, "caseInfo")) {
+            throw new Error("Invalid data format for case info import");
+          }
+          console.log("Data validation passed");
+
           // Merge imported data with existing table data
           const mergedTableData = [...tableData, ...importedData];
+          console.log("Merged table data:", mergedTableData);
+
           // Remove duplicates based on id
           tableData = mergedTableData.filter(
             (item, index, self) =>
               index === self.findIndex((t) => t.id === item.id)
           );
+          console.log("Final table data after merge:", tableData);
+
           saveData();
+          console.log("Data saved to localStorage");
+
           renderTable();
+          console.log("Table rendered");
+
+          showNotification("Case info data imported successfully");
         } catch (error) {
           console.error("Error importing case info data:", error);
+          showNotification(
+            "Error importing case info data: " + error.message,
+            true
+          );
+        } finally {
+          // Reset the file input
+          event.target.value = "";
         }
       }
     });
@@ -400,4 +437,37 @@ function updateFileControlsVisibility() {
       exportCaseInfoBtn.style.display = "none";
     }
   }
+}
+
+function showNotification(message, isError = false) {
+  const notification = document.createElement("div");
+  notification.textContent = message;
+  notification.style.position = "fixed";
+  notification.style.top = "20px";
+  notification.style.right = "20px";
+  notification.style.padding = "10px";
+  notification.style.borderRadius = "5px";
+  notification.style.backgroundColor = isError ? "#ff4444" : "#2ecc71"; // Changed to a darker green
+  notification.style.color = "white";
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 3000);
+}
+
+function validateImportedData(data, type) {
+  if (type === "billing") {
+    return data && Array.isArray(data.notes) && Array.isArray(data.activities);
+  } else if (type === "caseInfo") {
+    return (
+      Array.isArray(data) &&
+      data.every(
+        (item) =>
+          item.hasOwnProperty("id") &&
+          item.hasOwnProperty("caseId") &&
+          item.hasOwnProperty("caption") &&
+          item.hasOwnProperty("globalDeduplication") &&
+          item.hasOwnProperty("searchTerms")
+      )
+    );
+  }
+  return false;
 }
