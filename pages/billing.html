@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Billing Time Tracker</title>
+    <link rel="stylesheet" href="../public/css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <ul>
+        <li><a href="../index.html" class="nav-link">HOME</a></li>
+        <li><a href="./billing.html" class="nav-link active">BILLING</a></li>
+        <li><a href="./data-table.html" class="nav-link">CASE INFO</a></li>
+      </ul>
+    </nav>
+    <main>
+      <div id="notes-page" class="page active">
+        <h1>Billing Time Tracker</h1>
+        <form id="noteForm">
+          <input type="text" id="title" placeholder="Case" required />
+          <select id="activity" name="activity" required>
+            <option value="">Select Activity</option>
+          </select>
+          <textarea id="description" placeholder="Memo" required></textarea>
+          <input
+            type="number"
+            id="hours"
+            placeholder="Hours"
+            step="0.25"
+            min="0"
+            required
+          />
+          <button type="submit">Save Note</button>
+        </form>
+        <div id="noteList">
+          <h2>Saved Notes</h2>
+        </div>
+        <div class="file-controls file-controls-billing">
+          <button id="exportBillingBtn" class="action-btn">
+            <i class="fas fa-download"></i> Export Data
+          </button>
+          <input
+            type="file"
+            id="importBillingBtn"
+            accept=".json"
+            style="display: none"
+          />
+          <button
+            onclick="document.getElementById('importBillingBtn').click()"
+            class="action-btn"
+          >
+            <i class="fas fa-upload"></i> Import Data
+          </button>
+        </div>
+      </div>
+    </main>
+    <script src="../public/js/script.js"></script>
+  </body>
+</html>
