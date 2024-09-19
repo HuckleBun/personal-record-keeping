@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Case Information</title>
-    <link
-      rel="stylesheet"
-      href="/personal-record-keeping/public/css/styles.css"
-    />
+    <link rel="stylesheet" href="../public/css/styles.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -17,35 +14,27 @@
     <nav class="navbar">
       <ul>
         <li>
-          <a href="/personal-record-keeping/index.html" class="nav-link"
-            >HOME</a
-          >
+          <a href="../index.html" class="nav-link">HOME</a>
         </li>
         <li>
-          <a href="/personal-record-keeping/pages/billing.html" class="nav-link"
-            >BILLING</a
-          >
+          <a href="billing.html" class="nav-link">BILLING</a>
         </li>
         <li>
-          <a
-            href="/personal-record-keeping/pages/data-table.html"
-            class="nav-link active"
-            >CASE INFO</a
-          >
+          <a href="data-table.html" class="nav-link">CASE INFO</a>
         </li>
         <li>
-          <a
-            href="/personal-record-keeping/pages/email_templates.html"
-            class="nav-link"
-            >EMAIL TEMPLATES</a
-          >
+          <a href="email_templates.html" class="nav-link">EMAIL TEMPLATES</a>
         </li>
         <li>
-          <a
-            href="/personal-record-keeping/pages/password-generator.html"
-            class="nav-link"
+          <a href="password-generator.html" class="nav-link"
             >PASSWORD GENERATOR</a
           >
+        </li>
+        <li>
+          <a href="ftk_history.html" class="nav-link">FTK HISTORY</a>
+        </li>
+        <li>
+          <a href="rel_history.html" class="nav-link">RELATIVITY HISTORY</a>
         </li>
       </ul>
     </nav>
@@ -101,27 +90,71 @@
             <input type="text" id="caption" placeholder="Caption" required />
           </div>
           <div class="form-group">
-            <label for="globalDeduplication">Global Deduplication:</label>
-            <input
-              type="text"
-              id="globalDeduplication"
-              placeholder="Global Deduplication"
-              required
-            />
+            <label>Global Deduplication:</label>
+            <div class="radio-group">
+              <label>
+                <input
+                  type="radio"
+                  name="globalDeduplication"
+                  value="YES"
+                  required
+                />
+                <span>YES</span>
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="globalDeduplication"
+                  value="NO"
+                  required
+                />
+                <span>NO</span>
+              </label>
+            </div>
           </div>
           <div class="form-group">
             <label for="searchTerms">Search Terms:</label>
+            <div id="searchTerms" class="search-terms-box"></div>
+            <button type="button" id="addTermsBtn">Add Terms</button>
+          </div>
+        </form>
+        <button id="submitDataBtn" type="button">Submit</button>
+      </div>
+    </div>
+    <script src="../public/js/data-table.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentPage = window.location.pathname.split("/").pop();
+        const navLinks = document.querySelectorAll(".nav-link");
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (
+            link.getAttribute("href").includes(currentPage) ||
+            (currentPage === "" && link.getAttribute("href") === "index.html")
+          ) {
+            link.classList.add("active");
+          }
+        });
+      });
+    </script>
+    <!-- Add this new modal at the end of the body -->
+    <div id="termsModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add Search Terms</h2>
+        <form id="termsForm">
+          <div class="form-group">
             <input
               type="text"
-              id="searchTerms"
-              placeholder="Search Terms"
-              required
+              id="termInput"
+              placeholder="Enter a search term"
             />
+            <button type="button" id="addTermBtn">Add Term</button>
           </div>
-          <button type="submit">Submit</button>
+          <div id="termsList"></div>
+          <button type="submit">Submit Terms</button>
         </form>
       </div>
     </div>
-    <script src="/personal-record-keeping/public/js/data-table.js"></script>
   </body>
 </html>

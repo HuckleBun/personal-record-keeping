@@ -21,10 +21,20 @@ function initPasswordGeneratorPage() {
         passwordInput.value = password;
     });
 
-    copyBtn.addEventListener("click", function() {
-        passwordInput.select();
-        document.execCommand("copy");
-        showNotification("Password copied to clipboard!", false);
+    copyBtn.addEventListener("click", async function() {
+        const passwordToCopy = passwordInput.value.trim();
+        if (!passwordToCopy) {
+            showNotification("No password to copy. Generate a password first!", true);
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(passwordToCopy);
+            showNotification("Password copied to clipboard!", false);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+            showNotification("Failed to copy password", true);
+        }
     });
 
     // Remove the line that sets passwordInput.readOnly = true;
