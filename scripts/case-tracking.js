@@ -5,11 +5,11 @@ function getCaseData(matterNumber) {
     users: [],
     terms: {
       culling: {},
-      privilege: {}
+      privilege: {},
     },
-    collections: []
+    collections: [],
   };
-  
+
   // Ensure terms structure exists and is an object
   if (!data.terms) {
     data.terms = { culling: {}, privilege: {} };
@@ -24,7 +24,7 @@ function getCaseData(matterNumber) {
     const privilegeObj = {};
     data.terms.privilege = privilegeObj;
   }
-  
+
   return data;
 }
 
@@ -62,7 +62,7 @@ function saveCases() {
         caption,
         matterNumber,
         client,
-        ...fullCaseData
+        ...fullCaseData,
       });
     });
   });
@@ -83,7 +83,10 @@ function loadCases() {
   savedCases.forEach((caseData) => {
     // Get the full case data from localStorage
     const fullCaseData = getCaseData(caseData.matterNumber);
-    console.log(`Loading full case data for ${caseData.matterNumber}:`, fullCaseData);
+    console.log(
+      `Loading full case data for ${caseData.matterNumber}:`,
+      fullCaseData
+    );
 
     if (!casesByClient[caseData.client]) {
       casesByClient[caseData.client] = [];
@@ -91,7 +94,7 @@ function loadCases() {
     // Use the full case data instead of just the basic case info
     casesByClient[caseData.client].push({
       ...caseData,
-      ...fullCaseData
+      ...fullCaseData,
     });
   });
 
@@ -142,7 +145,9 @@ function createCaseElement(caption, matterNumber, client) {
     // Get current values from the case button text
     const currentText = caseBtn.textContent;
     const [currentMatterNumber, currentCaption] = currentText.split(" | ");
-    const currentClient = caseContainer.closest(".client-section").querySelector("h2").textContent;
+    const currentClient = caseContainer
+      .closest(".client-section")
+      .querySelector("h2").textContent;
 
     // Populate form fields with current values
     document.getElementById("edit-caption").value = currentCaption;
@@ -174,7 +179,8 @@ function createCaseElement(caption, matterNumber, client) {
     editForm.onsubmit = (e) => {
       e.preventDefault();
       const newCaption = document.getElementById("edit-caption").value;
-      const newMatterNumber = document.getElementById("edit-matter-number").value;
+      const newMatterNumber =
+        document.getElementById("edit-matter-number").value;
       const newClient = document.getElementById("edit-client").value;
 
       // Update case button text
@@ -217,7 +223,9 @@ function createCaseElement(caption, matterNumber, client) {
       // Remove from localStorage
       localStorage.removeItem(`case_${matterNumber}`);
       const savedCases = JSON.parse(localStorage.getItem("cases")) || [];
-      const updatedCases = savedCases.filter(c => c.matterNumber !== matterNumber);
+      const updatedCases = savedCases.filter(
+        (c) => c.matterNumber !== matterNumber
+      );
       localStorage.setItem("cases", JSON.stringify(updatedCases));
 
       // Remove from UI
@@ -312,6 +320,8 @@ function createCaseElement(caption, matterNumber, client) {
                 <th>Custodians</th>
                 <th>Collection Type</th>
                 <th>Location</th>
+                <th>Tenant</th>
+                <th>Date Range</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -400,28 +410,38 @@ function createCaseElement(caption, matterNumber, client) {
             privilegeListsContainer.innerHTML = "";
 
             // Reload terms lists
-            if (currentCaseData.terms.culling && typeof currentCaseData.terms.culling === 'object') {
-              Object.entries(currentCaseData.terms.culling).forEach(([listName, terms]) => {
-                const listContainer = createTermsListElement(
-                  listName,
-                  terms,
-                  "culling",
-                  caseModal
-                );
-                cullingListsContainer.appendChild(listContainer);
-              });
+            if (
+              currentCaseData.terms.culling &&
+              typeof currentCaseData.terms.culling === "object"
+            ) {
+              Object.entries(currentCaseData.terms.culling).forEach(
+                ([listName, terms]) => {
+                  const listContainer = createTermsListElement(
+                    listName,
+                    terms,
+                    "culling",
+                    caseModal
+                  );
+                  cullingListsContainer.appendChild(listContainer);
+                }
+              );
             }
 
-            if (currentCaseData.terms.privilege && typeof currentCaseData.terms.privilege === 'object') {
-              Object.entries(currentCaseData.terms.privilege).forEach(([listName, terms]) => {
-                const listContainer = createTermsListElement(
-                  listName,
-                  terms,
-                  "privilege",
-                  caseModal
-                );
-                privilegeListsContainer.appendChild(listContainer);
-              });
+            if (
+              currentCaseData.terms.privilege &&
+              typeof currentCaseData.terms.privilege === "object"
+            ) {
+              Object.entries(currentCaseData.terms.privilege).forEach(
+                ([listName, terms]) => {
+                  const listContainer = createTermsListElement(
+                    listName,
+                    terms,
+                    "privilege",
+                    caseModal
+                  );
+                  privilegeListsContainer.appendChild(listContainer);
+                }
+              );
             }
           }
         }
@@ -463,22 +483,33 @@ function createCaseElement(caption, matterNumber, client) {
 
       // Handle save button click
       termsModal.querySelector(".save-btn").addEventListener("click", () => {
-        const listName = termsModal.querySelector("#terms-list-name").value.trim();
+        const listName = termsModal
+          .querySelector("#terms-list-name")
+          .value.trim();
         const terms = termsModal.querySelector("#terms-input").value.trim();
-        const type = termsModal.querySelector('input[name="terms-type"]:checked').value;
+        const type = termsModal.querySelector(
+          'input[name="terms-type"]:checked'
+        ).value;
 
         if (listName && terms) {
           const caseData = getCaseData(matterNumber);
           if (!caseData.terms) caseData.terms = { culling: {}, privilege: {} };
           if (!caseData.terms[type]) caseData.terms[type] = {};
 
-          const termsList = terms.split("\n").filter(term => term.trim());
+          const termsList = terms.split("\n").filter((term) => term.trim());
           caseData.terms[type][listName] = termsList;
           saveCaseData(matterNumber, caseData);
 
           // Add to UI
-          const container = caseModal.querySelector(`[data-type="${type}"] .terms-lists-container`);
-          const listContainer = createTermsListElement(listName, termsList, type, caseModal);
+          const container = caseModal.querySelector(
+            `[data-type="${type}"] .terms-lists-container`
+          );
+          const listContainer = createTermsListElement(
+            listName,
+            termsList,
+            type,
+            caseModal
+          );
           container.appendChild(listContainer);
 
           termsModal.remove();
@@ -488,7 +519,9 @@ function createCaseElement(caption, matterNumber, client) {
       // Handle close and cancel
       const closeModal = () => termsModal.remove();
       termsModal.querySelector(".close").addEventListener("click", closeModal);
-      termsModal.querySelector(".cancel-btn").addEventListener("click", closeModal);
+      termsModal
+        .querySelector(".cancel-btn")
+        .addEventListener("click", closeModal);
       termsModal.addEventListener("click", (e) => {
         if (e.target === termsModal) closeModal();
       });
@@ -500,11 +533,13 @@ function createCaseElement(caption, matterNumber, client) {
 
     // Function to save users
     function saveUsers() {
-      const users = Array.from(usersTable.querySelectorAll("tr")).map((row) => ({
-        firstName: row.cells[0].textContent,
-        lastName: row.cells[1].textContent,
-        email: row.cells[2].textContent,
-      }));
+      const users = Array.from(usersTable.querySelectorAll("tr")).map(
+        (row) => ({
+          firstName: row.cells[0].textContent,
+          lastName: row.cells[1].textContent,
+          email: row.cells[2].textContent,
+        })
+      );
 
       const caseData = getCaseData(matterNumber);
       caseData.users = users;
@@ -539,7 +574,7 @@ function createCaseElement(caption, matterNumber, client) {
 
     // Load existing users if any
     if (caseData.users && caseData.users.length > 0) {
-      caseData.users.forEach(user => {
+      caseData.users.forEach((user) => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td contenteditable="true">${user.firstName || ""}</td>
@@ -585,12 +620,16 @@ function createCaseElement(caption, matterNumber, client) {
 
     // Function to save collections
     function saveCollections() {
-      const collections = Array.from(collectionTable.querySelectorAll("tr")).map((row) => ({
+      const collections = Array.from(
+        collectionTable.querySelectorAll("tr")
+      ).map((row) => ({
         date: row.cells[0].textContent,
         source: row.cells[1].textContent,
         custodians: row.cells[2].textContent,
         type: row.cells[3].textContent,
         location: row.cells[4].textContent,
+        tenant: row.cells[5].textContent,
+        dateRange: row.cells[6].textContent,
       }));
 
       const caseData = getCaseData(matterNumber);
@@ -602,6 +641,8 @@ function createCaseElement(caption, matterNumber, client) {
     addCollectionBtn.addEventListener("click", () => {
       const newRow = document.createElement("tr");
       newRow.innerHTML = `
+        <td contenteditable="true"></td>
+        <td contenteditable="true"></td>
         <td contenteditable="true"></td>
         <td contenteditable="true"></td>
         <td contenteditable="true"></td>
@@ -620,15 +661,17 @@ function createCaseElement(caption, matterNumber, client) {
       newRow.addEventListener("input", saveCollections);
 
       // Delete collection
-      newRow.querySelector(".delete-collection-btn").addEventListener("click", () => {
-        newRow.remove();
-        saveCollections();
-      });
+      newRow
+        .querySelector(".delete-collection-btn")
+        .addEventListener("click", () => {
+          newRow.remove();
+          saveCollections();
+        });
     });
 
     // Load existing collections if any
     if (caseData.collections && caseData.collections.length > 0) {
-      caseData.collections.forEach(collection => {
+      caseData.collections.forEach((collection) => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td contenteditable="true">${collection.date || ""}</td>
@@ -636,6 +679,8 @@ function createCaseElement(caption, matterNumber, client) {
           <td contenteditable="true">${collection.custodians || ""}</td>
           <td contenteditable="true">${collection.type || ""}</td>
           <td contenteditable="true">${collection.location || ""}</td>
+          <td contenteditable="true">${collection.tenant || ""}</td>
+          <td contenteditable="true">${collection.dateRange || ""}</td>
           <td>
             <button class="delete-collection-btn">
               <i class="fas fa-trash"></i>
@@ -645,10 +690,12 @@ function createCaseElement(caption, matterNumber, client) {
         collectionTable.appendChild(row);
 
         row.addEventListener("input", saveCollections);
-        row.querySelector(".delete-collection-btn").addEventListener("click", () => {
-          row.remove();
-          saveCollections();
-        });
+        row
+          .querySelector(".delete-collection-btn")
+          .addEventListener("click", () => {
+            row.remove();
+            saveCollections();
+          });
       });
     }
   });
@@ -683,16 +730,16 @@ document.addEventListener("DOMContentLoaded", function () {
   document.body.appendChild(fileInput);
 
   // Export functionality
-  document.getElementById('export-btn').addEventListener("click", () => {
+  document.getElementById("export-btn").addEventListener("click", () => {
     // Get all cases data
     const cases = JSON.parse(localStorage.getItem("cases")) || [];
     const exportData = {
       cases: cases,
-      caseDetails: {}
+      caseDetails: {},
     };
 
     // Get detailed data for each case
-    cases.forEach(caseData => {
+    cases.forEach((caseData) => {
       const detailedData = getCaseData(caseData.matterNumber);
       exportData.caseDetails[caseData.matterNumber] = detailedData;
     });
@@ -703,7 +750,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `case_data_${new Date().toISOString().split('T')[0]}.json`;
+    link.download = `case_data_${new Date().toISOString().split("T")[0]}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -711,7 +758,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Import functionality
-  document.getElementById('import-btn').addEventListener("click", () => {
+  document.getElementById("import-btn").addEventListener("click", () => {
     fileInput.click();
   });
 
@@ -722,18 +769,23 @@ document.addEventListener("DOMContentLoaded", function () {
       reader.onload = (e) => {
         try {
           const importedData = JSON.parse(e.target.result);
-          
+
           // Import main cases data
           localStorage.setItem("cases", JSON.stringify(importedData.cases));
-          
+
           // Import detailed case data
-          Object.entries(importedData.caseDetails).forEach(([matterNumber, data]) => {
-            localStorage.setItem(`case_${matterNumber}`, JSON.stringify(data));
-          });
-          
+          Object.entries(importedData.caseDetails).forEach(
+            ([matterNumber, data]) => {
+              localStorage.setItem(
+                `case_${matterNumber}`,
+                JSON.stringify(data)
+              );
+            }
+          );
+
           // Reload cases display
           loadCases();
-          
+
           // Show success message
           alert("Cases imported successfully!");
         } catch (error) {
@@ -810,7 +862,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add this inside the DOMContentLoaded event listener after getting DOM elements
   document.getElementById("caption").addEventListener("input", validateForm);
-  document.getElementById("matter-number").addEventListener("input", validateForm);
+  document
+    .getElementById("matter-number")
+    .addEventListener("input", validateForm);
   document.getElementById("client").addEventListener("change", validateForm);
 
   // Add form submission handler
@@ -953,7 +1007,13 @@ function createTermsListElement(listName, termsList, type, modal) {
           </button>
         </div>
         <div class="terms-list-view">
-          ${Array.isArray(termsList) ? termsList.map(term => `<div class="term">${term}</div>`).join("") : ''}
+          ${
+            Array.isArray(termsList)
+              ? termsList
+                  .map((term) => `<div class="term">${term}</div>`)
+                  .join("")
+              : ""
+          }
         </div>
       </div>
     `;
@@ -970,7 +1030,9 @@ function createTermsListElement(listName, termsList, type, modal) {
         <div class="modal-content">
           <span class="close">&times;</span>
           <h2>Edit Terms</h2>
-          <textarea style="width: 100%; height: 300px; margin: 20px 0;">${Array.isArray(termsList) ? termsList.join("\n") : ''}</textarea>
+          <textarea style="width: 100%; height: 300px; margin: 20px 0;">${
+            Array.isArray(termsList) ? termsList.join("\n") : ""
+          }</textarea>
           <div class="modal-buttons">
             <button class="save-changes-btn submit-btn">Save Changes</button>
             <button class="cancel-edit-btn cancel-btn">Cancel</button>
@@ -982,15 +1044,16 @@ function createTermsListElement(listName, termsList, type, modal) {
 
       // Save changes functionality
       editTermsModal.querySelector(".save-changes-btn").onclick = () => {
-        const newTerms = editTermsModal.querySelector("textarea").value
-          .split("\n")
-          .filter(term => term.trim());
+        const newTerms = editTermsModal
+          .querySelector("textarea")
+          .value.split("\n")
+          .filter((term) => term.trim());
 
         console.log("Saving edited terms:", {
           matterNumber: modal.dataset.matterNumber,
           listName,
           type,
-          newTerms
+          newTerms,
         });
 
         // Update the terms in localStorage
@@ -999,14 +1062,15 @@ function createTermsListElement(listName, termsList, type, modal) {
 
         if (!caseData.terms) caseData.terms = { culling: {}, privilege: {} };
         caseData.terms[type][listName] = newTerms;
-        
+
         console.log("Updated case data before saving edit:", caseData);
         saveCaseData(modal.dataset.matterNumber, caseData);
         console.log("Edited terms saved to localStorage");
 
         // Update the terms view
-        viewModal.querySelector(".terms-list-view").innerHTML = 
-          newTerms.map(term => `<div class="term">${term}</div>`).join("");
+        viewModal.querySelector(".terms-list-view").innerHTML = newTerms
+          .map((term) => `<div class="term">${term}</div>`)
+          .join("");
 
         // Update the termsList variable
         termsList = newTerms;
@@ -1025,7 +1089,7 @@ function createTermsListElement(listName, termsList, type, modal) {
 
     // Copy button functionality
     viewModal.querySelector(".copy-terms-btn").onclick = () => {
-      const termsText = Array.isArray(termsList) ? termsList.join("\n") : '';
+      const termsText = Array.isArray(termsList) ? termsList.join("\n") : "";
       navigator.clipboard.writeText(termsText).then(() => {
         const copyBtn = viewModal.querySelector(".copy-terms-btn i");
         copyBtn.className = "fas fa-check";
@@ -1073,7 +1137,7 @@ function createTermsListElement(listName, termsList, type, modal) {
       console.log("Deleting terms list:", {
         matterNumber: modal.dataset.matterNumber,
         listName,
-        type
+        type,
       });
 
       const caseData = getCaseData(modal.dataset.matterNumber);
@@ -1309,7 +1373,7 @@ function saveTermsList(matterNumber, listName, terms, type) {
     matterNumber,
     listName,
     terms,
-    type
+    type,
   });
   const caseData = getCaseData(matterNumber);
   console.log("Current case data before save:", caseData);
@@ -1338,119 +1402,120 @@ function saveTermsList(matterNumber, listName, terms, type) {
 
 // Update the addCase function
 function addCase(caption, matterNumber, client) {
-    // Get or create the client section
-    const clientSection = getOrCreateClientSection(client);
+  // Get or create the client section
+  const clientSection = getOrCreateClientSection(client);
 
-    // Create the case container
-    const caseContainer = document.createElement('div');
-    caseContainer.className = 'case-container';
+  // Create the case container
+  const caseContainer = document.createElement("div");
+  caseContainer.className = "case-container";
 
-    // Create the case button
-    const caseBtn = document.createElement('button');
-    caseBtn.className = 'case-btn';
-    caseBtn.textContent = `${matterNumber} | ${caption}`;
-    caseBtn.addEventListener('click', () => openCaseModal(matterNumber));
+  // Create the case button
+  const caseBtn = document.createElement("button");
+  caseBtn.className = "case-btn";
+  caseBtn.textContent = `${matterNumber} | ${caption}`;
+  caseBtn.addEventListener("click", () => openCaseModal(matterNumber));
 
-    // Create edit and delete buttons
-    const editBtn = document.createElement('button');
-    editBtn.className = 'edit-btn';
-    editBtn.innerHTML = '<i class="fas fa-edit"></i>';
-    editBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openEditModal(matterNumber, caption, client);
-    });
+  // Create edit and delete buttons
+  const editBtn = document.createElement("button");
+  editBtn.className = "edit-btn";
+  editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+  editBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openEditModal(matterNumber, caption, client);
+  });
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-    deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openDeleteModal(matterNumber);
-    });
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "delete-btn";
+  deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+  deleteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openDeleteModal(matterNumber);
+  });
 
-    // Append buttons to container
-    caseContainer.appendChild(caseBtn);
-    caseContainer.appendChild(editBtn);
-    caseContainer.appendChild(deleteBtn);
+  // Append buttons to container
+  caseContainer.appendChild(caseBtn);
+  caseContainer.appendChild(editBtn);
+  caseContainer.appendChild(deleteBtn);
 
-    // Insert the case container in sorted order
-    insertCaseSorted(clientSection, caseContainer, matterNumber);
+  // Insert the case container in sorted order
+  insertCaseSorted(clientSection, caseContainer, matterNumber);
 
-    // Save case data
-    const caseData = {
-        caption,
-        matterNumber,
-        client,
-        overview: [],
-        users: [],
-        terms: {
-            culling: {},
-            privilege: {}
-        },
-        collections: []
-    };
-    saveCaseData(matterNumber, caseData);
+  // Save case data
+  const caseData = {
+    caption,
+    matterNumber,
+    client,
+    overview: [],
+    users: [],
+    terms: {
+      culling: {},
+      privilege: {},
+    },
+    collections: [],
+  };
+  saveCaseData(matterNumber, caseData);
 }
 
 // Update the getOrCreateClientSection function
 function getOrCreateClientSection(client) {
-    // First try to find an existing section
-    const existingSections = document.querySelectorAll('.client-section');
-    for (const section of existingSections) {
-        if (section.querySelector('h2').textContent === client) {
-            return section;
-        }
+  // First try to find an existing section
+  const existingSections = document.querySelectorAll(".client-section");
+  for (const section of existingSections) {
+    if (section.querySelector("h2").textContent === client) {
+      return section;
     }
+  }
 
-    // If no existing section found, create a new one
-    const clientSection = document.createElement('div');
-    clientSection.className = 'client-section';
-    
-    const clientHeader = document.createElement('h2');
-    clientHeader.textContent = client;
-    clientSection.appendChild(clientHeader);
+  // If no existing section found, create a new one
+  const clientSection = document.createElement("div");
+  clientSection.className = "client-section";
 
-    // Find the correct position to insert the new section
-    const casesContainer = document.getElementById('cases-container');
-    const sections = Array.from(casesContainer.children);
-    const insertIndex = sections.findIndex(section => 
-        section.querySelector('h2').textContent.localeCompare(client) > 0
-    );
+  const clientHeader = document.createElement("h2");
+  clientHeader.textContent = client;
+  clientSection.appendChild(clientHeader);
 
-    if (insertIndex === -1) {
-        casesContainer.appendChild(clientSection);
-    } else {
-        casesContainer.insertBefore(clientSection, sections[insertIndex]);
-    }
+  // Find the correct position to insert the new section
+  const casesContainer = document.getElementById("cases-container");
+  const sections = Array.from(casesContainer.children);
+  const insertIndex = sections.findIndex(
+    (section) =>
+      section.querySelector("h2").textContent.localeCompare(client) > 0
+  );
 
-    return clientSection;
+  if (insertIndex === -1) {
+    casesContainer.appendChild(clientSection);
+  } else {
+    casesContainer.insertBefore(clientSection, sections[insertIndex]);
+  }
+
+  return clientSection;
 }
 
 function insertCaseSorted(clientSection, caseContainer, matterNumber) {
-    // Get all existing cases in this client section
-    const cases = Array.from(clientSection.querySelectorAll('.case-container'));
-    
-    // Helper function to extract and compare matter numbers
-    const compareMatterNumbers = (a, b) => {
-        // Remove any non-digit characters and convert to number for comparison
-        const numA = parseInt(a.replace(/\D/g, ''));
-        const numB = parseInt(b.replace(/\D/g, ''));
-        return numA - numB;
-    };
+  // Get all existing cases in this client section
+  const cases = Array.from(clientSection.querySelectorAll(".case-container"));
 
-    // Find the correct position to insert the new case
-    const insertIndex = cases.findIndex(existingCase => {
-        const existingMatterNumber = existingCase
-            .querySelector('.case-btn')
-            .textContent.split(' | ')[0];
-        
-        return compareMatterNumbers(existingMatterNumber, matterNumber) > 0;
-    });
+  // Helper function to extract and compare matter numbers
+  const compareMatterNumbers = (a, b) => {
+    // Remove any non-digit characters and convert to number for comparison
+    const numA = parseInt(a.replace(/\D/g, ""));
+    const numB = parseInt(b.replace(/\D/g, ""));
+    return numA - numB;
+  };
 
-    // Insert the case at the correct position
-    if (insertIndex === -1) {
-        clientSection.appendChild(caseContainer);
-    } else {
-        clientSection.insertBefore(caseContainer, cases[insertIndex]);
-    }
+  // Find the correct position to insert the new case
+  const insertIndex = cases.findIndex((existingCase) => {
+    const existingMatterNumber = existingCase
+      .querySelector(".case-btn")
+      .textContent.split(" | ")[0];
+
+    return compareMatterNumbers(existingMatterNumber, matterNumber) > 0;
+  });
+
+  // Insert the case at the correct position
+  if (insertIndex === -1) {
+    clientSection.appendChild(caseContainer);
+  } else {
+    clientSection.insertBefore(caseContainer, cases[insertIndex]);
+  }
 }
