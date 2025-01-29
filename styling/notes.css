@@ -1,0 +1,822 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    background-color: #f5f7fa;
+}
+
+.navbar {
+    width: 240px;
+    background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+    min-height: 100vh;
+    padding: 30px 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.navbar a {
+    display: block;
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 12px 25px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    margin: 4px 12px;
+    border-radius: 6px;
+}
+
+.navbar a:hover {
+    background-color: rgba(255,255,255,0.1);
+    transform: translateX(5px);
+}
+
+.navbar a.active {
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+.main-content {
+    padding: 40px;
+    flex-grow: 1;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+
+/* Notes Actions */
+.notes-actions {
+    margin-bottom: 30px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Search bar styling */
+.search-bar {
+    margin-bottom: 20px;
+    width: calc(100% - 10px);
+    position: relative;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #95a5a6;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #e1e8ed;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 4px rgba(52,152,219,0.1);
+}
+
+.search-bar input::placeholder {
+    color: #95a5a6;
+}
+
+.notes-list-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Remove old search wrapper styles */
+.search-wrapper {
+    display: none;
+}
+
+/* Adjust import/export button styles */
+.secondary-btn {
+    height: 40px; /* Match height with primary button */
+}
+
+/* Notes Layout */
+.notes-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+    height: calc(100vh - 200px);
+}
+
+.notes-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.notes-filters select {
+    flex: 1;
+    padding: 8px;
+    border: 2px solid #e1e8ed;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.notes-filters .secondary-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notes-filters .secondary-btn i {
+    font-size: 1rem;
+}
+
+.notes-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.note-item {
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.note-item:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-color: #3498db;
+}
+
+.note-item.active {
+    background: #fff;
+    border-color: #3498db;
+    box-shadow: 0 4px 12px rgba(52,152,219,0.1);
+}
+
+.note-item h3 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.note-item .category {
+    font-size: 0.8rem;
+    color: #3498db;
+    background: rgba(52,152,219,0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.note-item .timestamp {
+    font-size: 0.8rem;
+    color: #95a5a6;
+    margin-top: 5px;
+}
+
+/* Note Content Panel */
+.note-content-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.empty-state {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #95a5a6;
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+/* Rich Text Editor */
+.rich-text-toolbar {
+    display: flex;
+    gap: 5px;
+    padding: 10px;
+    background: #f8f9fa;
+    border: 1px solid #e1e8ed;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+}
+
+.rich-text-toolbar button {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    background: white;
+    border: 1px solid #e1e8ed;
+    border-radius: 4px;
+    color: #2c3e50;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.rich-text-toolbar button:hover {
+    background: #f1f3f5;
+    border-color: #cbd5e0;
+}
+
+.rich-text-toolbar .separator {
+    width: 1px;
+    background: #e1e8ed;
+    margin: 0 5px;
+}
+
+.note-editor {
+    min-height: 300px;
+    padding: 15px;
+    border: 1px solid #e1e8ed;
+    border-radius: 0 0 6px 6px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    outline: none;
+}
+
+/* Form Group Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #2c3e50;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 4px rgba(52,152,219,0.1);
+}
+
+/* Category Input Group */
+.category-input {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.category-input select {
+    flex: 1;
+}
+
+.category-input .secondary-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-input .secondary-btn i {
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Placeholder styling */
+.form-group input::placeholder {
+    color: #95a5a6;
+}
+
+/* Select dropdown styling */
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* Modal Adjustments */
+.wide-modal {
+    max-width: 800px;
+}
+
+/* Notification Modal styles are already defined */
+
+/* Button Styles */
+.primary-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52,152,219,0.2);
+}
+
+.secondary-btn {
+    padding: 8px 16px;
+    background: white;
+    border: 2px solid #e1e8ed;
+    border-radius: 6px;
+    color: #2c3e50;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+    border-color: #3498db;
+    color: #3498db;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52,152,219,0.1);
+}
+
+/* Import/Export buttons */
+.import-export-buttons {
+    display: none;
+}
+
+/* Note Actions */
+.note-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e1e8ed;
+}
+
+.note-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.note-header .category {
+    font-size: 0.8rem;
+    color: #3498db;
+    background: rgba(52,152,219,0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+.note-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.note-actions .secondary-btn {
+    padding: 8px 16px;
+    height: auto;
+    font-size: 0.9rem;
+}
+
+.note-actions .secondary-btn i {
+    margin-right: 6px;
+}
+
+.note-body {
+    color: #2c3e50;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Modal Buttons */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.cancel-btn {
+    padding: 10px 20px;
+    background: #f1f3f5;
+    border: none;
+    border-radius: 6px;
+    color: #666;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #e9ecef;
+    color: #444;
+    transform: translateY(-1px);
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52,152,219,0.2);
+}
+
+/* Close button */
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background: none;
+    border: none;
+    color: #95a5a6;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.close:hover {
+    color: #e74c3c;
+    transform: scale(1.1);
+}
+
+/* Rich text toolbar buttons active state */
+.rich-text-toolbar button.active {
+    background: #3498db;
+    border-color: #2980b9;
+    color: white;
+}
+
+.rich-text-toolbar button.active:hover {
+    background: #2980b9;
+}
+
+/* Import/Export buttons */
+.action-buttons .secondary-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: white;
+    border: 1px solid #e1e8ed;
+    border-radius: 6px;
+    color: #95a5a6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.action-buttons .secondary-btn:hover {
+    background: #f8f9fa;
+    color: #3498db;
+    border-color: #3498db;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.action-buttons .secondary-btn i {
+    font-size: 1rem;
+}
+
+/* Modal base styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1000;
+}
+
+/* Base modal content styles */
+.modal-content {
+    position: relative;
+    background: white;
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.wide-modal .modal-content {
+    max-width: 800px;
+}
+
+/* Confirmation modal should appear on top of other modals */
+#confirm-modal {
+    z-index: 1100;
+}
+
+#success-modal {
+    z-index: 1100;
+}
+
+/* Confirmation Modal Styling */
+.notification-modal {
+    max-width: 400px !important;
+    padding: 25px !important;
+}
+
+.notification-modal h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+.notification-modal .warning-icon {
+    color: #e74c3c;
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.notification-modal p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+}
+
+.notification-modal .modal-buttons {
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.notification-modal .cancel-btn {
+    background: #f8f9fa;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+}
+
+.notification-modal .delete-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification-modal .delete-btn:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+
+/* Add Category Modal specific styles */
+.modal-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    margin: 15px 0;
+    box-sizing: border-box;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 4px rgba(52,152,219,0.1);
+}
+
+.notification-modal h3 i {
+    color: #3498db;
+    font-size: 1.2rem;
+}
+
+/* Tags styling */
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.tag {
+    font-size: 0.8rem;
+    color: #3498db;
+    background: rgba(52,152,219,0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+/* Tags Input Styling */
+.tags-input {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    margin-bottom: 8px;
+}
+
+/* Tags Select Styling */
+.tags-select {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    background: white;
+    min-height: 120px;
+    max-height: 200px;
+    overflow-y: auto;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none !important; /* Force remove any background images */
+}
+
+/* Remove dropdown arrow in IE */
+.tags-select::-ms-expand {
+    display: none;
+}
+
+.tags-select option {
+    padding: 8px 12px;
+    margin: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: block;
+}
+
+.tags-select option:checked {
+    background: #3498db !important;
+    color: white;
+}
+
+.tags-select option:hover {
+    background-color: #f8f9fa;
+}
+
+.tags-help {
+    font-size: 0.85rem;
+    color: #95a5a6;
+    margin-top: 4px;
+}
+
+/* Selected Tags Preview */
+.selected-tags-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.selected-tags-preview .tag {
+    background: rgba(52,152,219,0.1);
+    color: #3498db;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Update modal title */
+#add-category-modal h3 i {
+    color: #3498db;
+}
+
+/* Categories Management Modal */
+.categories-list {
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.delete-category-btn {
+    background: none;
+    border: none;
+    color: #95a5a6;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.delete-category-btn:hover {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+/* Manage Tags Modal */
+.manage-tags-add-btn {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+}
+
+/* Modal z-index hierarchy */
+.modal {
+    z-index: 1000;
+}
+
+/* Base modals */
+#manage-categories-modal {
+    z-index: 1000;
+}
+
+/* Modals that should appear on top */
+#add-category-modal,
+#confirm-modal,
+#success-modal {
+    z-index: 1100;
+}
+
+/* Ensure modal content stays above overlays */
+.modal-content {
+    position: relative;
+    z-index: 1;
+}
