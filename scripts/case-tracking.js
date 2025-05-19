@@ -280,6 +280,7 @@ function createCaseElement(caption, matterNumber, client) {
           <button class="tab-button" data-tab="users">Users</button>
           <button class="tab-button" data-tab="collection">Collection</button>
           <button class="tab-button" data-tab="terms">Terms</button>
+          <button class="tab-button" data-tab="files">Files</button>
         </div>
         <div class="tab-content active" id="overview">
           <table class="overview-table">
@@ -304,6 +305,7 @@ function createCaseElement(caption, matterNumber, client) {
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email Address</th>
+                <th>Rel Group</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -343,6 +345,17 @@ function createCaseElement(caption, matterNumber, client) {
               </div>
               <div class="terms-lists-container"></div>
             </div>
+          </div>
+        </div>
+        <div class="tab-content" id="files">
+          <div class="files-header">
+            <button class="upload-file-btn">
+              <i class="fas fa-upload"></i> Upload File
+            </button>
+            <input type="file" id="file-upload" style="display: none" multiple>
+          </div>
+          <div class="files-container">
+            <div class="files-list"></div>
           </div>
         </div>
       </div>
@@ -538,6 +551,7 @@ function createCaseElement(caption, matterNumber, client) {
           firstName: row.cells[0].textContent,
           lastName: row.cells[1].textContent,
           email: row.cells[2].textContent,
+          relGroup: row.cells[3].textContent,
         })
       );
 
@@ -550,6 +564,7 @@ function createCaseElement(caption, matterNumber, client) {
     addUserBtn.addEventListener("click", () => {
       const newRow = document.createElement("tr");
       newRow.innerHTML = `
+        <td contenteditable="true"></td>
         <td contenteditable="true"></td>
         <td contenteditable="true"></td>
         <td contenteditable="true"></td>
@@ -580,6 +595,7 @@ function createCaseElement(caption, matterNumber, client) {
           <td contenteditable="true">${user.firstName || ""}</td>
           <td contenteditable="true">${user.lastName || ""}</td>
           <td contenteditable="true">${user.email || ""}</td>
+          <td contenteditable="true">${user.relGroup || ""}</td>
           <td>
             <button class="delete-user-btn">
               <i class="fas fa-trash"></i>
@@ -697,6 +713,181 @@ function createCaseElement(caption, matterNumber, client) {
             saveCollections();
           });
       });
+    }
+
+    // File upload functionality
+    const fileUploadBtn = caseModal.querySelector(".upload-file-btn");
+    const fileInput = caseModal.querySelector("#file-upload");
+    const filesList = caseModal.querySelector(".files-list");
+
+    // Load existing files
+    const caseFiles = caseData.files || [];
+    updateFilesList(caseFiles);
+
+    fileUploadBtn.addEventListener("click", () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files);
+      const newFiles = [];
+
+      for (const file of files) {
+        // Convert file to base64
+        const base64 = await fileToBase64(file);
+
+        const fileData = {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          data: base64,
+          uploadDate: new Date().toISOString(),
+        };
+
+        newFiles.push(fileData);
+      }
+
+      // Update case data with new files
+      const caseData = getCaseData(matterNumber);
+      caseData.files = [...(caseData.files || []), ...newFiles];
+      saveCaseData(matterNumber, caseData);
+
+      // Update files list display
+      updateFilesList(caseData.files);
+
+      // Clear input
+      fileInput.value = "";
+    });
+
+    // Helper function to convert file to base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    }
+
+    // Function to update files list display
+    function updateFilesList(files) {
+      if (!files || !files.length) {
+        filesList.innerHTML = `
+          <div class="no-files">
+            <i class="fas fa-file-upload"></i>
+            <p>No files uploaded yet</p>
+          </div>
+        `;
+        return;
+      }
+
+      filesList.innerHTML = files
+        .map(
+          (file, index) => `
+        <div class="file-item">
+          <div class="file-icon">
+            <i class="${getFileIcon(file.type)}"></i>
+          </div>
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-meta">
+              <span>${formatFileSize(file.size)}</span>
+              <span>${new Date(file.uploadDate).toLocaleDateString()}</span>
+            </div>
+          </div>
+          <div class="file-actions">
+            <button class="download-btn" data-name="${file.name}" data-data="${
+            file.data
+          }">
+              <i class="fas fa-download"></i>
+            </button>
+            <button class="delete-btn" data-index="${index}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `
+        )
+        .join("");
+
+      // Add event listeners after updating innerHTML
+      filesList.querySelectorAll(".download-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          downloadFile(btn.dataset.name, btn.dataset.data);
+        });
+      });
+
+      filesList.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          deleteFile(parseInt(btn.dataset.index), matterNumber);
+        });
+      });
+    }
+
+    // Helper function to get appropriate file icon
+    function getFileIcon(fileType) {
+      if (fileType.includes("pdf")) return "fas fa-file-pdf";
+      if (fileType.includes("excel") || fileType.includes("spreadsheet"))
+        return "fas fa-file-excel";
+      if (fileType.includes("word")) return "fas fa-file-word";
+      return "fas fa-file";
+    }
+
+    // Helper function to format file size
+    function formatFileSize(bytes) {
+      if (bytes === 0) return "0 Bytes";
+      const k = 1024;
+      const sizes = ["Bytes", "KB", "MB", "GB"];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    }
+
+    // Move downloadFile and deleteFile functions to global scope
+    function downloadFile(fileName, base64Data) {
+      const link = document.createElement("a");
+      link.href = base64Data;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function deleteFile(fileIndex, matterNumber) {
+      const deleteModal = document.createElement("div");
+      deleteModal.className = "modal";
+      deleteModal.innerHTML = `
+        <div class="modal-content delete-modal">
+          <div class="delete-modal-header">
+            <i class="fas fa-exclamation-triangle warning-icon"></i>
+            <h2>Delete File</h2>
+          </div>
+          <p>Are you sure you want to delete this file?</p>
+          <p class="delete-warning">This action cannot be undone.</p>
+          <div class="modal-buttons">
+            <button class="cancel-btn">Cancel</button>
+            <button class="confirm-delete-btn">Delete</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(deleteModal);
+      deleteModal.style.display = "block";
+
+      const confirmBtn = deleteModal.querySelector(".confirm-delete-btn");
+      const cancelBtn = deleteModal.querySelector(".cancel-btn");
+
+      confirmBtn.onclick = () => {
+        const caseData = getCaseData(matterNumber);
+        caseData.files.splice(fileIndex, 1);
+        saveCaseData(matterNumber, caseData);
+        updateFilesList(caseData.files);
+        deleteModal.remove();
+      };
+
+      cancelBtn.onclick = () => deleteModal.remove();
+      deleteModal.onclick = (e) => {
+        if (e.target === deleteModal) deleteModal.remove();
+      };
     }
   });
 
@@ -1347,6 +1538,7 @@ function saveUsers(matterNumber, usersTable) {
     firstName: row.cells[0].textContent,
     lastName: row.cells[1].textContent,
     email: row.cells[2].textContent,
+    relGroup: row.cells[3].textContent,
   }));
 
   const caseData = getCaseData(matterNumber);

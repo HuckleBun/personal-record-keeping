@@ -986,4 +986,155 @@ h1 {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(52,152,219,0.2);
 }
+
+/* Files tab styles */
+.files-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.upload-file-btn {
+    padding: 10px 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.upload-file-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52,152,219,0.2);
+}
+
+.files-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e1e8ed;
+    overflow: hidden;
+}
+
+.files-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.no-files {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #95a5a6;
+}
+
+.no-files i {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.no-files p {
+    font-size: 0.9rem;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #e1e8ed;
+    transition: background-color 0.2s ease;
+}
+
+.file-item:hover {
+    background-color: #f8fafc;
+}
+
+.file-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #3498db;
+}
+
+.file-info {
+    flex: 1;
+    margin-left: 16px;
+}
+
+.file-name {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.file-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: #95a5a6;
+}
+
+.file-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.file-actions button {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid #e1e8ed;
+    background: white;
+    color: #95a5a6;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.file-actions .download-btn:hover {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52,152,219,0.2);
+}
+
+.file-actions .delete-btn:hover {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231,76,60,0.2);
+}
+
+/* Scrollbar styling for files list */
+.files-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.files-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.files-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.files-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
   

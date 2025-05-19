@@ -260,12 +260,14 @@ h1 {
 
 .note-editor {
     min-height: 300px;
+    max-height: 400px;
     padding: 15px;
     border: 1px solid #e1e8ed;
     border-radius: 0 0 6px 6px;
     font-size: 0.95rem;
     line-height: 1.6;
     outline: none;
+    overflow-y: auto;
 }
 
 /* Form Group Styles */
@@ -443,10 +445,12 @@ h1 {
 
 /* Modal Buttons */
 .modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 30px;
+    margin-top: 20px;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px 0;
+    border-top: 1px solid #e1e8ed;
 }
 
 .cancel-btn {
@@ -568,6 +572,10 @@ h1 {
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     z-index: 1;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .wide-modal .modal-content {
@@ -819,4 +827,11 @@ h1 {
 .modal-content {
     position: relative;
     z-index: 1;
+}
+
+/* Ensure form takes full height of modal */
+#note-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
