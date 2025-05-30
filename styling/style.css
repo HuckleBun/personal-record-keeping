@@ -14,10 +14,29 @@ body {
   box-shadow: 2px 0 10px rgba(0,0,0,0.1);
 }
 
+.navbar-section {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.navbar-section:first-of-type {
+  margin-top: 30px;
+}
+
+.section-title {
+  color: #95a5a6;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 25px;
+  margin-bottom: 15px;
+}
+
 .navbar a {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   color: #ecf0f1;
   text-decoration: none;
   padding: 12px 25px;
@@ -27,6 +46,12 @@ body {
   transition: all 0.3s ease;
   margin: 4px 12px;
   border-radius: 6px;
+}
+
+.navbar a i {
+  width: 16px;
+  text-align: center;
+  margin-right: 8px;
 }
 
 .navbar a:hover {

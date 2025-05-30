@@ -57,32 +57,30 @@ addCaseBtn.addEventListener("click", () => {
 // Close modals when clicking close button or cancel button
 closeButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    addCaseModal.style.display = "none";
-    viewCaseModal.style.display = "none";
-    deleteConfirmModal.style.display = "none";
+    // Find the closest parent modal to this close button
+    const modal = button.closest(".modal");
+    if (modal) {
+      modal.style.display = "none";
+    }
     resetFileLabel();
   });
 });
 
 cancelButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    addCaseModal.style.display = "none";
-    viewCaseModal.style.display = "none";
-    deleteConfirmModal.style.display = "none";
+    // Find the closest parent modal to this cancel button
+    const modal = button.closest(".modal");
+    if (modal) {
+      modal.style.display = "none";
+    }
     resetFileLabel();
   });
 });
 
 // Close modals when clicking outside
 window.addEventListener("click", (e) => {
-  if (
-    e.target === addCaseModal ||
-    e.target === viewCaseModal ||
-    e.target === deleteConfirmModal
-  ) {
-    addCaseModal.style.display = "none";
-    viewCaseModal.style.display = "none";
-    deleteConfirmModal.style.display = "none";
+  if (e.target.classList.contains("modal")) {
+    e.target.style.display = "none";
     resetFileLabel();
   }
 });

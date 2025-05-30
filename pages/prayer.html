@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Password Generator | GURU Discovery</title>
-    <link rel="stylesheet" href="../styling/password-generator.css" />
+    <title>Prayer | GURU Discovery</title>
+    <link rel="stylesheet" href="../styling/prayer.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -22,7 +22,7 @@
         <a href="./email-templates.html">
           <i class="fas fa-envelope"></i> EMAIL TEMPLATES
         </a>
-        <a href="./password-generator.html" class="active">
+        <a href="./password-generator.html">
           <i class="fas fa-key"></i> PASSWORD GENERATOR
         </a>
         <a href="./project-board.html">
@@ -46,52 +46,15 @@
         <a href="./body-transformation.html">
           <i class="fas fa-dumbbell"></i> BODY TRANSFORMATION
         </a>
-        <a href="./prayer.html"> <i class="fas fa-pray"></i> PRAYER </a>
+        <a href="./prayer.html" class="active">
+          <i class="fas fa-pray"></i> PRAYER
+        </a>
       </div>
     </nav>
-    <div id="password-generator" class="main-content">
-      <div class="content-wrapper">
-        <h1>Password Generator</h1>
-        <div class="generator-container">
-          <div class="length-control">
-            <p>Password Length: <span id="length-value">16</span></p>
-            <input
-              type="range"
-              id="length-slider"
-              min="12"
-              max="20"
-              value="16"
-            />
-          </div>
-
-          <div class="options">
-            <label>
-              <input type="checkbox" id="special-chars" checked />
-              <span class="checkbox-label">
-                <i class="fas fa-symbols"></i> Include Special Characters
-              </span>
-            </label>
-          </div>
-
-          <div class="password-display">
-            <input
-              type="text"
-              id="password-output"
-              readonly
-              placeholder="Your secure password"
-            />
-            <button id="copy-btn" title="Copy to clipboard">
-              <i class="fas fa-copy"></i>
-            </button>
-          </div>
-
-          <button id="generate-btn">
-            <i class="fas fa-sync-alt"></i> Generate Password
-          </button>
-        </div>
-      </div>
+    <div class="main-content">
+      <h1>Prayer</h1>
     </div>
 
-    <script src="../scripts/password-generator.js"></script>
+    <script src="../scripts/prayer.js"></script>
   </body>
 </html>
