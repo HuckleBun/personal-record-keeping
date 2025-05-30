@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget | GURU Discovery</title>
+    <link rel="stylesheet" href="../styling/budget.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="../index.html"> <i class="fas fa-home"></i> HOME </a>
+
+      <div class="navbar-section">
+        <div class="section-title">GURU</div>
+        <a href="./case-tracking.html">
+          <i class="fas fa-tasks"></i> CASE TRACKING
+        </a>
+        <a href="./email-templates.html">
+          <i class="fas fa-envelope"></i> EMAIL TEMPLATES
+        </a>
+        <a href="./password-generator.html">
+          <i class="fas fa-key"></i> PASSWORD GENERATOR
+        </a>
+        <a href="./project-board.html">
+          <i class="fas fa-project-diagram"></i> PROJECT BOARD
+        </a>
+        <a href="./documentation.html">
+          <i class="fas fa-book"></i> DOCUMENTATION
+        </a>
+        <a href="./checklist.html">
+          <i class="fas fa-check-square"></i> CHECKLIST
+        </a>
+        <a href="./notes.html"> <i class="fas fa-sticky-note"></i> NOTES </a>
+        <a href="./data-disposition.html">
+          <i class="fas fa-database"></i> DATA DISPOSITION
+        </a>
+      </div>
+
+      <div class="navbar-section">
+        <div class="section-title">PERSONAL</div>
+        <a href="./budget.html" class="active">
+          <i class="fas fa-wallet"></i> BUDGET
+        </a>
+        <a href="./body-transformation.html">
+          <i class="fas fa-dumbbell"></i> BODY TRANSFORMATION
+        </a>
+        <a href="./prayer.html"> <i class="fas fa-pray"></i> PRAYER </a>
+      </div>
+    </nav>
+    <div class="main-content">
+      <h1>Budget</h1>
+
+      <!-- Salary Section -->
+      <div class="salary-section">
+        <div class="salary-input">
+          <label for="monthly-salary">Monthly Salary:</label>
+          <div class="input-group">
+            <span class="currency-symbol">$</span>
+            <input
+              type="number"
+              id="monthly-salary"
+              placeholder="Enter your monthly salary"
+              step="0.01"
+              min="0"
+            />
+          </div>
+        </div>
+        <div class="salary-input">
+          <label for="monthly-bonus">Monthly Bonus:</label>
+          <div class="input-group">
+            <span class="currency-symbol">$</span>
+            <input
+              type="number"
+              id="monthly-bonus"
+              placeholder="Enter your monthly bonus"
+              step="0.01"
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Bonuses Section -->
+      <div class="additional-bonuses">
+        <div class="bonus-header">
+          <h3>Additional Bonuses</h3>
+          <button id="add-bonus" class="primary-btn">
+            <i class="fas fa-gift"></i> Add Bonus
+          </button>
+        </div>
+        <div id="bonus-list" class="bonus-list"></div>
+      </div>
+
+      <!-- Bonus Modal -->
+      <div id="bonus-modal" class="modal">
+        <div class="modal-content">
+          <span class="close"><i class="fas fa-times"></i></span>
+          <h2>Add Additional Bonus</h2>
+          <form id="bonus-form">
+            <div class="form-group">
+              <label for="bonus-name">Bonus Description:</label>
+              <input type="text" id="bonus-name" required />
+            </div>
+            <div class="form-group">
+              <label for="bonus-amount">Amount ($):</label>
+              <input
+                type="number"
+                id="bonus-amount"
+                step="0.01"
+                min="0"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="bonus-date">Date:</label>
+              <input type="date" id="bonus-date" required />
+            </div>
+            <div class="modal-buttons">
+              <button type="button" class="cancel-btn">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+              <button type="submit" class="submit-btn">
+                <i class="fas fa-save"></i> Save Bonus
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="card-title">Monthly Salary</div>
+          <div class="card-amount" id="salary-display">$0.00</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-title">Total Expenses</div>
+          <div class="card-amount" id="overall-total">$0.00</div>
+        </div>
+        <div class="summary-card expense-card">
+          <div class="card-title">Recurring Expenses</div>
+          <div class="card-amount" id="recurring-total">$0.00</div>
+        </div>
+        <div class="summary-card expense-card">
+          <div class="card-title">Individual Expenses</div>
+          <div class="card-amount" id="individual-total">$0.00</div>
+        </div>
+        <div class="summary-card free-spend-card">
+          <div class="card-title">Free Spending</div>
+          <div class="card-amount" id="free-spend">$0.00</div>
+        </div>
+      </div>
+
+      <!-- Date Range Picker -->
+      <div class="date-range-container">
+        <input type="text" id="date-range" placeholder="Select date range..." />
+      </div>
+
+      <!-- Add Payment Buttons -->
+      <div class="action-buttons">
+        <button id="add-recurring" class="primary-btn">
+          <i class="fas fa-sync-alt"></i> Add Recurring Payment
+        </button>
+        <button id="add-individual" class="primary-btn">
+          <i class="fas fa-plus"></i> Add Individual Payment
+        </button>
+      </div>
+
+      <!-- Payments List -->
+      <div class="payments-container">
+        <h2>Recurring Payments</h2>
+        <div id="recurring-payments" class="payments-list"></div>
+
+        <h2>Individual Payments</h2>
+        <div id="individual-payments" class="payments-list"></div>
+      </div>
+
+      <!-- Add Payment Modal -->
+      <div id="payment-modal" class="modal">
+        <div class="modal-content">
+          <span class="close"><i class="fas fa-times"></i></span>
+          <h2 id="modal-title">Add Payment</h2>
+          <form id="payment-form">
+            <div class="form-group">
+              <label for="payment-name">Payment Name:</label>
+              <input type="text" id="payment-name" required />
+            </div>
+            <div class="form-group">
+              <label for="payment-amount">Amount ($):</label>
+              <input
+                type="number"
+                id="payment-amount"
+                step="0.01"
+                min="0"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="payment-date">Date:</label>
+              <input type="date" id="payment-date" required />
+            </div>
+            <div id="recurring-fields" style="display: none">
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="payment-recurring" />
+                  Recurring Payment
+                </label>
+              </div>
+            </div>
+            <div class="modal-buttons">
+              <button type="button" class="cancel-btn">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+              <button type="submit" class="submit-btn">
+                <i class="fas fa-save"></i> Save Payment
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="../scripts/budget.js"></script>
+  </body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Body Transformation | GURU Discovery</title>
+    <link rel="stylesheet" href="../styling/body-transformation.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="../index.html"> <i class="fas fa-home"></i> HOME </a>
+
+      <div class="navbar-section">
+        <div class="section-title">GURU</div>
+        <a href="./case-tracking.html">
+          <i class="fas fa-tasks"></i> CASE TRACKING
+        </a>
+        <a href="./email-templates.html">
+          <i class="fas fa-envelope"></i> EMAIL TEMPLATES
+        </a>
+        <a href="./password-generator.html">
+          <i class="fas fa-key"></i> PASSWORD GENERATOR
+        </a>
+        <a href="./project-board.html">
+          <i class="fas fa-project-diagram"></i> PROJECT BOARD
+        </a>
+        <a href="./documentation.html">
+          <i class="fas fa-book"></i> DOCUMENTATION
+        </a>
+        <a href="./checklist.html">
+          <i class="fas fa-check-square"></i> CHECKLIST
+        </a>
+        <a href="./notes.html"> <i class="fas fa-sticky-note"></i> NOTES </a>
+        <a href="./data-disposition.html">
+          <i class="fas fa-database"></i> DATA DISPOSITION
+        </a>
+      </div>
+
+      <div class="navbar-section">
+        <div class="section-title">PERSONAL</div>
+        <a href="./budget.html"> <i class="fas fa-wallet"></i> BUDGET </a>
+        <a href="./body-transformation.html" class="active">
+          <i class="fas fa-dumbbell"></i> BODY TRANSFORMATION
+        </a>
+        <a href="./prayer.html"> <i class="fas fa-pray"></i> PRAYER </a>
+      </div>
+    </nav>
+    <div class="main-content">
+      <h1>Body Transformation</h1>
+
+      <!-- Date Selection -->
+      <div class="date-selector">
+        <button class="date-nav-btn" id="prev-date">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <input type="date" id="selected-date" />
+        <button class="date-nav-btn" id="next-date">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="streak-tracker">
+          <i class="fas fa-fire"></i>
+          <span class="streak-count" id="streak-count">0</span>
+          <span class="streak-label">Day Streak!</span>
+        </div>
+      </div>
+
+      <!-- Body Composition Section -->
+      <div class="body-composition">
+        <div class="section-header">
+          <h2><i class="fas fa-weight"></i> Body Composition</h2>
+          <div class="button-group">
+            <button
+              class="action-btn"
+              id="undo-measurement"
+              title="Undo Last Measurement"
+            >
+              <i class="fas fa-undo"></i>
+            </button>
+            <button class="add-btn" id="log-measurements">
+              <i class="fas fa-plus"></i> Log Measurements
+            </button>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-header">
+              <i class="fas fa-weight"></i>
+              <h3>Weight</h3>
+            </div>
+            <div class="metric-value" id="weight-value">0 lbs</div>
+            <div class="chart-container">
+              <canvas id="weight-chart"></canvas>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-header">
+              <i class="fas fa-percentage"></i>
+              <h3>Body Fat</h3>
+            </div>
+            <div class="metric-value" id="fat-value">0%</div>
+            <div class="chart-container">
+              <canvas id="fat-chart"></canvas>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-header">
+              <i class="fas fa-tint"></i>
+              <h3>Body Water</h3>
+            </div>
+            <div class="metric-value" id="water-value">0%</div>
+            <div class="chart-container">
+              <canvas id="water-chart"></canvas>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-header">
+              <i class="fas fa-dumbbell"></i>
+              <h3>Muscle Mass</h3>
+            </div>
+            <div class="metric-value" id="muscle-value">0 lbs</div>
+            <div class="chart-container">
+              <canvas id="muscle-chart"></canvas>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-header">
+              <i class="fas fa-calculator"></i>
+              <h3>BMI</h3>
+            </div>
+            <div class="metric-value" id="bmi-value">0</div>
+            <div class="chart-container">
+              <canvas id="bmi-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goals and Progress Section -->
+      <div class="dashboard">
+        <!-- Water Intake Card -->
+        <div class="tracking-card">
+          <div class="card-header">
+            <i class="fas fa-tint"></i>
+            <h3>Water Intake</h3>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="water-progress"></div>
+          </div>
+          <div class="card-content">
+            <span class="progress-text">0 / 1 Gallon</span>
+            <div class="quick-add">
+              <button class="add-btn" data-amount="8" type="button">
+                +8oz
+              </button>
+              <button class="add-btn" data-amount="16" type="button">
+                +16oz
+              </button>
+              <button class="add-btn" data-amount="32" type="button">
+                +32oz
+              </button>
+            </div>
+            <div class="entries-list" id="water-entries">
+              <!-- Water entries will be listed here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Nutrition Tracking Card -->
+        <div class="tracking-card">
+          <div class="card-header">
+            <i class="fas fa-utensils"></i>
+            <h3>Nutrition</h3>
+          </div>
+          <!-- Calories Progress -->
+          <div class="progress-section">
+            <label>Calories</label>
+            <div class="progress-container">
+              <div class="progress-bar" id="calorie-progress"></div>
+            </div>
+            <span class="progress-text">0 / 2000 kcal</span>
+          </div>
+          <!-- Protein Progress -->
+          <div class="progress-section">
+            <label>Protein</label>
+            <div class="progress-container">
+              <div class="progress-bar" id="protein-progress"></div>
+            </div>
+            <span class="progress-text">0 / 160g</span>
+          </div>
+          <div class="card-content">
+            <button class="add-btn" id="log-meal">
+              <i class="fas fa-plus"></i> Log Meal
+            </button>
+            <div class="entries-list" id="meal-entries">
+              <!-- Meal entries will be listed here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Tracking Card -->
+        <div class="tracking-card">
+          <div class="card-header">
+            <i class="fas fa-dumbbell"></i>
+            <h3>Daily Activity</h3>
+          </div>
+          <div class="card-content">
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="water-done"
+                  class="activity-checkbox"
+                />
+                <span class="checkbox-text">Completed Water Intake</span>
+              </label>
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="nutrition-done"
+                  class="activity-checkbox"
+                />
+                <span class="checkbox-text">Completed Nutrition</span>
+              </label>
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="workout-done"
+                  class="activity-checkbox"
+                />
+                <span class="checkbox-text">Completed Workout</span>
+              </label>
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="cardio-done"
+                  class="activity-checkbox"
+                />
+                <span class="checkbox-text">Completed Cardio</span>
+              </label>
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="prayer-done"
+                  class="activity-checkbox"
+                />
+                <span class="checkbox-text">Completed Daily Prayer</span>
+              </label>
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="bible-done"
+                  class="activity-checkbox"
+                />
+                <span class="checkbox-text"
+                  >Completed 2 Chapters of the Bible</span
+                >
+              </label>
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="creatine-done"
+                  class="activity-checkbox"
+                />
+                <span class="checkbox-text">Completed Creatine</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Measurements Modal -->
+      <div id="measurements-modal" class="modal">
+        <div class="modal-content">
+          <span class="close"><i class="fas fa-times"></i></span>
+          <h2>Log Measurements</h2>
+          <form id="measurements-form">
+            <div class="form-group">
+              <label for="weight">Weight (lbs):</label>
+              <input type="number" id="weight" min="0" step="0.1" required />
+            </div>
+            <div class="form-group">
+              <label for="body-fat">Body Fat (%):</label>
+              <input
+                type="number"
+                id="body-fat"
+                min="0"
+                max="100"
+                step="0.1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="body-water">Body Water (%):</label>
+              <input
+                type="number"
+                id="body-water"
+                min="0"
+                max="100"
+                step="0.1"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="muscle-mass">Muscle Mass (lbs):</label>
+              <input
+                type="number"
+                id="muscle-mass"
+                min="0"
+                step="0.1"
+                required
+              />
+            </div>
+            <div class="modal-buttons">
+              <button type="button" class="cancel-btn">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+              <button type="submit" class="submit-btn">
+                <i class="fas fa-save"></i> Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Add Meal Modal -->
+      <div id="meal-modal" class="modal">
+        <div class="modal-content">
+          <span class="close"><i class="fas fa-times"></i></span>
+          <h2>Log Meal</h2>
+          <form id="meal-form">
+            <div class="form-group">
+              <label for="meal-name">Meal Name:</label>
+              <input type="text" id="meal-name" required />
+            </div>
+            <div class="form-group">
+              <label for="calories">Calories:</label>
+              <input type="number" id="calories" min="0" required />
+            </div>
+            <div class="form-group">
+              <label for="meal-protein">Protein (g):</label>
+              <input type="number" id="meal-protein" min="0" required />
+            </div>
+            <div class="modal-buttons">
+              <button type="button" class="cancel-btn">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+              <button type="submit" class="submit-btn">
+                <i class="fas fa-save"></i> Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Settings Modal -->
+      <div id="settings-modal" class="modal">
+        <div class="modal-content">
+          <span class="close"><i class="fas fa-times"></i></span>
+          <h2>Daily Goals</h2>
+          <form id="goals-form">
+            <div class="form-group">
+              <label for="water-goal">Water Goal (oz):</label>
+              <input type="number" id="water-goal" min="0" step="8" required />
+            </div>
+            <div class="form-group">
+              <label for="protein-goal">Protein Goal (g):</label>
+              <input type="number" id="protein-goal" min="0" required />
+            </div>
+            <div class="form-group">
+              <label for="calorie-goal">Calorie Goal:</label>
+              <input type="number" id="calorie-goal" min="0" required />
+            </div>
+            <div class="modal-buttons">
+              <button type="button" class="cancel-btn">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+              <button type="submit" class="submit-btn">
+                <i class="fas fa-save"></i> Save Goals
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expanded Graph Modal -->
+    <div class="modal" id="graph-modal">
+      <div class="modal-content graph-modal-content">
+        <span class="close"><i class="fas fa-times"></i></span>
+        <h2 id="graph-modal-title">Progress Over Time</h2>
+        <div class="graph-controls">
+          <select id="time-range">
+            <option value="7">Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="90">Last 90 Days</option>
+            <option value="180">Last 180 Days</option>
+            <option value="365">Last Year</option>
+          </select>
+        </div>
+        <div class="expanded-chart-container">
+          <canvas id="expanded-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/body-transformation.js"></script>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle"></i>
+      <span id="toast-message"></span>
+    </div>
+  </body>
+</html>
