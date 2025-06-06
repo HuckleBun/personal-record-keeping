@@ -102,6 +102,10 @@ h1 {
     border-top-color: #2ecc71;
 }
 
+.negative-amount {
+    color: #e74c3c !important;
+}
+
 .summary-card:hover {
     transform: translateY(-5px);
 }

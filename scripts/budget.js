@@ -165,10 +165,14 @@ function savePayments() {
 }
 
 function formatCurrency(amount) {
-  return new Intl.NumberFormat("en-US", {
+  const isNegative = amount < 0;
+  const absoluteAmount = Math.abs(amount);
+  const formattedAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(amount);
+  }).format(absoluteAmount);
+
+  return isNegative ? `-${formattedAmount}` : formattedAmount;
 }
 
 function formatDate(dateString) {
@@ -221,21 +225,73 @@ function updatePaymentsList(startDate = firstDay, endDate = lastDay) {
   recurringPaymentsList.innerHTML = "";
   individualPaymentsList.innerHTML = "";
 
-  let recurringTotal = 0;
-  let individualTotal = 0;
+  let recurringTotalFirstHalf = 0;
+  let recurringTotalSecondHalf = 0;
+  let individualTotalFirstHalf = 0;
+  let individualTotalSecondHalf = 0;
   let additionalBonusTotal = bonuses.reduce(
     (total, bonus) => total + bonus.amount,
     0
   );
   let monthlyIncome = monthlySalary + monthlyBonus;
+  let halfSalary = monthlySalary / 2;
+
+  console.log("DETAILED DEBUG INFO:");
+  console.log("Monthly Salary:", monthlySalary);
+  console.log("Monthly Bonus:", monthlyBonus);
+  console.log("Half Salary:", halfSalary);
+
+  // Helper function to get the correct day of month
+  function getDayOfMonth(dateString) {
+    // Add timezone offset to keep the date consistent
+    const date = new Date(dateString);
+    const timezoneOffset = date.getTimezoneOffset() * 60000;
+    const adjustedDate = new Date(date.getTime() + timezoneOffset);
+    return adjustedDate.getDate();
+  }
 
   // Sort and display recurring payments by date
   const sortedRecurring = [...payments.recurring].sort((a, b) => {
     return new Date(a.date) - new Date(b.date);
   });
 
+  console.log("\nAll Current Recurring Payments:");
   sortedRecurring.forEach((payment) => {
-    recurringTotal += payment.amount;
+    const dayOfMonth = getDayOfMonth(payment.date);
+    console.log(`${payment.name}: $${payment.amount} on day ${dayOfMonth}`);
+  });
+
+  sortedRecurring.forEach((payment) => {
+    const dayOfMonth = getDayOfMonth(payment.date);
+
+    // Special handling for apartment rent
+    if (payment.name === "Apartment Rent") {
+      if (payment.amount === 740) {
+        recurringTotalFirstHalf += payment.amount;
+        console.log(
+          `First Half Recurring: ${payment.name} = $${payment.amount}`
+        );
+      } else if (payment.amount === 700) {
+        recurringTotalSecondHalf += payment.amount;
+        console.log(
+          `Second Half Recurring: ${payment.name} = $${payment.amount}`
+        );
+      }
+    } else {
+      // Regular payments
+      if (dayOfMonth <= 14) {
+        recurringTotalFirstHalf += payment.amount;
+        console.log(
+          `First Half Recurring: ${payment.name} = $${payment.amount}`
+        );
+      } else {
+        recurringTotalSecondHalf += payment.amount;
+        console.log(
+          `Second Half Recurring: ${payment.name} = $${payment.amount}`
+        );
+      }
+    }
+
     recurringPaymentsList.appendChild(
       createPaymentElement(payment, "recurring")
     );
@@ -246,44 +302,110 @@ function updatePaymentsList(startDate = firstDay, endDate = lastDay) {
     return new Date(a.date) - new Date(b.date);
   });
 
+  console.log("\nAll Current Individual Payments:");
+  sortedIndividual.forEach((payment) => {
+    const dayOfMonth = getDayOfMonth(payment.date);
+    if (
+      new Date(payment.date) >= startDate &&
+      new Date(payment.date) <= endDate
+    ) {
+      console.log(`${payment.name}: $${payment.amount} on day ${dayOfMonth}`);
+    }
+  });
+
   sortedIndividual.forEach((payment) => {
     const paymentDate = new Date(payment.date);
     if (paymentDate >= startDate && paymentDate <= endDate) {
-      individualTotal += payment.amount;
+      const dayOfMonth = getDayOfMonth(payment.date);
+
+      // Categorize individual payment based on day of month (1-14 first half, 15-31 second half)
+      if (dayOfMonth <= 14) {
+        individualTotalFirstHalf += payment.amount;
+        console.log(
+          `First Half Individual: ${payment.name} = $${payment.amount}`
+        );
+      } else {
+        individualTotalSecondHalf += payment.amount;
+        console.log(
+          `Second Half Individual: ${payment.name} = $${payment.amount}`
+        );
+      }
+
       individualPaymentsList.appendChild(
         createPaymentElement(payment, "individual")
       );
     }
   });
 
-  const totalExpenses = recurringTotal + individualTotal;
-  const freeSpending = Math.max(
-    0,
-    monthlyIncome + additionalBonusTotal - totalExpenses
+  const totalFirstHalf = recurringTotalFirstHalf + individualTotalFirstHalf;
+  const totalSecondHalf = recurringTotalSecondHalf + individualTotalSecondHalf;
+  const totalExpenses = totalFirstHalf + totalSecondHalf;
+
+  console.log("\nFINAL TOTALS:");
+  console.log("First Half Recurring Total:", recurringTotalFirstHalf);
+  console.log("First Half Individual Total:", individualTotalFirstHalf);
+  console.log("First Half Total:", totalFirstHalf);
+  console.log("Second Half Recurring Total:", recurringTotalSecondHalf);
+  console.log("Second Half Individual Total:", individualTotalSecondHalf);
+  console.log("Second Half Total:", totalSecondHalf);
+
+  // Calculate free spending for each pay period based on when expenses occur
+  const freeSpendingFirstHalf = halfSalary - totalFirstHalf;
+  const freeSpendingSecondHalf = halfSalary + monthlyBonus - totalSecondHalf;
+
+  console.log("\nFREE SPENDING CALCULATIONS:");
+  console.log(
+    `First Half: ${halfSalary} - ${totalFirstHalf} = ${freeSpendingFirstHalf}`
+  );
+  console.log(
+    `Second Half: ${halfSalary} + ${monthlyBonus} - ${totalSecondHalf} = ${freeSpendingSecondHalf}`
   );
 
   // Update all displays
   document.getElementById("salary-display").textContent =
     formatCurrency(monthlyIncome);
-  document.getElementById("recurring-total").textContent =
-    formatCurrency(recurringTotal);
-  document.getElementById("individual-total").textContent =
-    formatCurrency(individualTotal);
+  document.getElementById("recurring-total").textContent = formatCurrency(
+    recurringTotalFirstHalf + recurringTotalSecondHalf
+  );
+  document.getElementById("individual-total").textContent = formatCurrency(
+    individualTotalFirstHalf + individualTotalSecondHalf
+  );
   document.getElementById("overall-total").textContent =
     formatCurrency(totalExpenses);
-  document.getElementById("free-spend").textContent =
-    formatCurrency(freeSpending);
+
+  // Create spans for each amount to allow individual styling
+  const firstHalfSpan = document.createElement("span");
+  firstHalfSpan.textContent = formatCurrency(freeSpendingFirstHalf);
+  if (freeSpendingFirstHalf < 0) {
+    firstHalfSpan.classList.add("negative-amount");
+  }
+
+  const secondHalfSpan = document.createElement("span");
+  secondHalfSpan.textContent = formatCurrency(freeSpendingSecondHalf);
+  if (freeSpendingSecondHalf < 0) {
+    secondHalfSpan.classList.add("negative-amount");
+  }
+
+  const freeSpendElement = document.getElementById("free-spend");
+  freeSpendElement.innerHTML = ""; // Clear existing content
+  freeSpendElement.appendChild(firstHalfSpan);
+  freeSpendElement.appendChild(document.createTextNode(" / "));
+  freeSpendElement.appendChild(secondHalfSpan);
 
   // Add color classes based on free spending amount
-  const freeSpendElement = document.getElementById("free-spend");
   freeSpendElement.classList.remove(
     "text-danger",
     "text-warning",
     "text-success"
   );
-  if (freeSpending <= 0) {
+
+  // Add appropriate color class based on both periods
+  if (freeSpendingFirstHalf < 0 || freeSpendingSecondHalf < 0) {
     freeSpendElement.classList.add("text-danger");
-  } else if (freeSpending < monthlyIncome * 0.2) {
+  } else if (
+    freeSpendingFirstHalf + freeSpendingSecondHalf <
+    monthlyIncome * 0.2
+  ) {
     // Less than 20% of salary
     freeSpendElement.classList.add("text-warning");
   } else {
