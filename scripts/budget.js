@@ -35,23 +35,6 @@ const monthlyBonusInput = document.getElementById("monthly-bonus");
 salaryInput.value = monthlySalary || "";
 monthlyBonusInput.value = monthlyBonus || "";
 
-// Initialize date range picker
-const dateRangePicker = flatpickr("#date-range", {
-  mode: "range",
-  dateFormat: "Y-m-d",
-  onChange: function (selectedDates) {
-    if (selectedDates.length === 2) {
-      updatePaymentsList(selectedDates[0], selectedDates[1]);
-    }
-  },
-});
-
-// Set default date range to current month
-const now = new Date();
-const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-dateRangePicker.setDate([firstDay, lastDay]);
-
 // Event Listeners
 addRecurringBtn.addEventListener("click", () => openModal("recurring"));
 addIndividualBtn.addEventListener("click", () => openModal("individual"));
@@ -110,6 +93,56 @@ bonusForm.addEventListener("submit", function (e) {
   updatePaymentsList();
   bonusModal.style.display = "none";
 });
+
+// Add event listener for expense history button and modal close
+const showExpenseHistoryBtn = document.getElementById("show-expense-history");
+const expenseHistoryModal = document.getElementById("expense-history-modal");
+const expenseHistoryList = document.getElementById("expense-history-list");
+
+if (showExpenseHistoryBtn && expenseHistoryModal && expenseHistoryList) {
+  showExpenseHistoryBtn.addEventListener("click", () => {
+    updateExpenseHistoryList();
+    expenseHistoryModal.style.display = "block";
+  });
+
+  // Close modal on close button click
+  expenseHistoryModal.querySelector(".close").addEventListener("click", () => {
+    expenseHistoryModal.style.display = "none";
+  });
+
+  // Optional: close modal when clicking outside modal content
+  expenseHistoryModal.addEventListener("click", (e) => {
+    if (e.target === expenseHistoryModal) {
+      expenseHistoryModal.style.display = "none";
+    }
+  });
+}
+
+function updateExpenseHistoryList() {
+  expenseHistoryList.innerHTML = "";
+  if (!payments.individual.length) {
+    expenseHistoryList.innerHTML =
+      '<div style="color:#95a5a6;text-align:center;padding:20px;font-style:italic;">No individual expenses recorded.</div>';
+    return;
+  }
+  // Sort by most recent first
+  const sorted = [...payments.individual].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
+  sorted.forEach((payment) => {
+    const div = document.createElement("div");
+    div.className = "payment-item";
+    div.style.marginBottom = "10px";
+    div.innerHTML = `
+      <div class="payment-info">
+        <div class="payment-name">${payment.name}</div>
+        <div class="payment-date">${formatDate(payment.date)}</div>
+      </div>
+      <div class="payment-amount">${formatCurrency(payment.amount)}</div>
+    `;
+    expenseHistoryList.appendChild(div);
+  });
+}
 
 // Functions
 function openModal(type) {
@@ -291,7 +324,7 @@ function updateRecurringPaymentDates() {
 updateRecurringPaymentDates();
 
 // Add updateRecurringPaymentDates to the updatePaymentsList function
-function updatePaymentsList(startDate = firstDay, endDate = lastDay) {
+function updatePaymentsList() {
   // Update recurring payment dates first
   updateRecurringPaymentDates();
 
@@ -319,6 +352,22 @@ function updatePaymentsList(startDate = firstDay, endDate = lastDay) {
     return date.getDate();
   }
 
+  // Get today's date and determine current pay period
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const currentDay = today.getDate();
+  let payPeriodStart, payPeriodEnd;
+  if (currentDay <= 14) {
+    // 1st to 14th
+    payPeriodStart = new Date(currentYear, currentMonth, 1);
+    payPeriodEnd = new Date(currentYear, currentMonth, 14);
+  } else {
+    // 15th to end of month
+    payPeriodStart = new Date(currentYear, currentMonth, 15);
+    payPeriodEnd = new Date(currentYear, currentMonth + 1, 0); // last day of month
+  }
+
   // Sort and display recurring payments by date
   const sortedRecurring = [...payments.recurring].sort((a, b) => {
     return new Date(a.date) - new Date(b.date);
@@ -334,8 +383,13 @@ function updatePaymentsList(startDate = firstDay, endDate = lastDay) {
     }
   });
 
-  // Sort and display individual payments by date
-  const sortedIndividual = [...payments.individual].sort((a, b) => {
+  // Filter and sort individual payments for current pay period
+  const filteredIndividual = payments.individual.filter((payment) => {
+    const [year, month, day] = payment.date.split("-");
+    const paymentDate = new Date(year, month - 1, day);
+    return paymentDate >= payPeriodStart && paymentDate <= payPeriodEnd;
+  });
+  const sortedIndividual = [...filteredIndividual].sort((a, b) => {
     return new Date(a.date) - new Date(b.date);
   });
 
@@ -412,7 +466,7 @@ function updatePaymentsList(startDate = firstDay, endDate = lastDay) {
     recurringPaymentsList.appendChild(paymentElement);
   });
 
-  // Create and append individual payment elements
+  // Create and append filtered individual payment elements
   sortedIndividual.forEach((payment) => {
     const paymentElement = createPaymentElement(payment, "individual");
     individualPaymentsList.appendChild(paymentElement);

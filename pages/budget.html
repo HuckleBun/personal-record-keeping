@@ -159,11 +159,6 @@
         </div>
       </div>
 
-      <!-- Date Range Picker -->
-      <div class="date-range-container">
-        <input type="text" id="date-range" placeholder="Select date range..." />
-      </div>
-
       <!-- Add Payment Buttons -->
       <div class="action-buttons">
         <button id="add-recurring" class="primary-btn">
@@ -171,6 +166,9 @@
         </button>
         <button id="add-individual" class="primary-btn">
           <i class="fas fa-plus"></i> Add Individual Payment
+        </button>
+        <button id="show-expense-history" class="primary-btn">
+          <i class="fas fa-history"></i> Individual Expense History
         </button>
       </div>
 
@@ -224,6 +222,18 @@
               </button>
             </div>
           </form>
+        </div>
+      </div>
+
+      <!-- Individual Expense History Modal -->
+      <div id="expense-history-modal" class="modal">
+        <div
+          class="modal-content"
+          style="max-width: 600px; max-height: 80vh; overflow-y: auto"
+        >
+          <span class="close"><i class="fas fa-times"></i></span>
+          <h2>Individual Expense History</h2>
+          <div id="expense-history-list" style="margin-top: 20px"></div>
         </div>
       </div>
     </div>
