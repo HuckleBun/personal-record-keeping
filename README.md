@@ -1,7 +1,7 @@
 # personal-record-keeping
 
 ## Purpose
-My hub for all my work and personal organization and tracking.
+My hub for all my work organization.
 
 ## Built With
 * HTML
