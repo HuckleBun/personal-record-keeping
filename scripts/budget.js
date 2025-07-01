@@ -376,7 +376,7 @@ function updatePaymentsList() {
   sortedRecurring.forEach((payment) => {
     const dayOfMonth = getDayOfMonth(payment.date);
     // Only add to the correct half
-    if (dayOfMonth <= 15) {
+    if (dayOfMonth <= 14) {
       recurringTotalFirstHalf += payment.amount;
     } else {
       recurringTotalSecondHalf += payment.amount;
